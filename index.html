@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<!--
+To change this license header, choose License Headers in Project Properties.
+To change this template file, choose Tools | Templates
+and open the template in the editor.
+-->
+<html>
+    <head>
+        <title>TODO supply a title</title>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <script type="text/javascript" src="vector.js"></script>
+        <script type="text/javascript" src="player.js"></script>
+        <script type="text/javascript" src="tile.js"></script>
+        <script type="text/javascript" src="map.js"></script>
+        <script type="text/javascript" src="raycasting.js"></script>
+        <script>
+            var width = 320;
+            var height = 240;
+            var origX = 0;
+            var origY = height;
+            var aspectRatio = width / height;
+            var prevTime = 0;
+            var canvas, context;
+            var player = null;
+            var map = null;
+            var raycasting = null;
+            
+            window.onload = function() {
+                canvas = document.getElementById("canvas");
+                context = canvas.getContext("2d");
+                canvas.width = width;
+                canvas.height = height;
+                map = new Map();
+                var playerX = map.tileLength * 1 + map.tileLength / 2;
+                var playerY = map.tileLength * 1 + map.tileLength / 2; 
+                player = new Player(playerX, playerY, 10);
+                raycasting = new Raycasting(3);
+                document.onkeydown = onKeyDown;
+                document.onkeyup = onKeyUp;
+                requestAnimationFrame(update);
+            };
+            
+            function update(time) {
+                var dt = (time - prevTime) / 1000;
+                prevTime = time;
+                var fps = parseInt(1 / dt);
+                context.clearRect(0, 0, width, height);
+                context.fillText(fps, width - 10, 10);
+                for (let tile of map.tiles) {
+                    tile.update(dt);
+                    tile.render(context);
+                }
+                
+                player.update(dt);
+                player.render(context);
+                raycasting.update(dt);
+                raycasting.render(context);
+                requestAnimationFrame(update);
+            }
+            
+            function onKeyDown(evt) {
+                if (evt.keyCode === 38) player.forward(true);
+                if (evt.keyCode === 37) player.rotateLeft(true);
+                if (evt.keyCode === 39) player.rotateRight(true);
+            }
+            
+            function onKeyUp(evt) {
+                if (evt.keyCode === 38) player.forward(false);
+                if (evt.keyCode === 37) player.rotateLeft(false);
+                if (evt.keyCode === 39) player.rotateRight(false);
+            }
+        </script>
+    </head>
+    <body>
+        <canvas id="canvas"></canvas>
+    </body>
+</html>
