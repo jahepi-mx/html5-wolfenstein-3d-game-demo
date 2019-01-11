@@ -54,6 +54,7 @@ class Vector {
         var length = this.length();
         this.x = Math.cos(radians) * length;
         this.y = Math.sin(radians) * length;
+        return this;
     }
     
     addAngle(radians) {

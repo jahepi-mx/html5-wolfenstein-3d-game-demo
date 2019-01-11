@@ -1,6 +1,6 @@
 class Player {
     constructor(x, y, length) {
-        this.moves = [[0, 0], [1, 0], [1, 1], [0, 1], [-1, 1], [-1, 0], [-1, -1], [0, 1]];
+        this.moves = [[0, 0], [1, 0], [1, 1], [0, 1], [-1, 1], [-1, 0], [-1, -1], [0, -1], [1, -1]];
         this.length = length;
         this.position = new Vector(x, y);
         this.velocity = new Vector(0, 0);
