@@ -62,6 +62,7 @@ class Vector {
         var angle = this.getAngle() + radians;
         this.x = Math.cos(angle) * length;
         this.y = Math.sin(angle) * length;
+        return this;
     }
     
     clone() {
