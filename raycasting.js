@@ -1,80 +1,46 @@
 class Raycasting {
     
     constructor(numberOfRays) {
-        this.fov = Math.PI / 2; // 90 degrees
+        this.fov = 60 * Math.PI / 180;
         this.numberOfRays = numberOfRays;
         this.radStep = this.fov / (this.numberOfRays - 1);
         this.tileDirs = [[0, 0], [1, 0], [1, 1], [0, 1], [-1, 1], [-1, 0], [-1, -1], [0, -1], [1, -1]];
+        this.data = [];
     }
     
-    update(dt) {   
-    }
-    
-    renderSprites(context) {  
-        for (let sprite of sprites) {  
+    sprites() {
+        var radians = player.rotation;
+        var center = new Vector(1, 0).setAngle(radians);
+        var right = new Vector(1, 0).setAngle(radians - this.fov / 2);
+        for (let sprite of sprites) {
             var spriteVector = sprite.position.sub(player.position);
-            var playerVector = new Vector(100, 0);
-            playerVector.setAngle(player.rotation);
-            if (spriteVector.dot(playerVector) > 0) {
-                this.drawLine(context, player.position, spriteVector.add(player.position), "#cdcdcd");              
-                var fov = this.fov / 2;
-                var extraFov = 10 * Math.PI / 180 + fov;
-                //var vFov1 = playerVector.clone().addAngle(-extraFov);
-                var vFov2 = playerVector.clone().addAngle(-fov);
-                var vFov3 = playerVector.clone().addAngle(fov);
-                var vFov4 = playerVector.clone().addAngle(extraFov);
-                //this.drawLine(context, player.position, vFov1.add(player.position), "#cdcdcd");
-                //this.drawLine(context, player.position, vFov2.add(player.position), "#cdcdcd");
-                this.drawLine(context, player.position, vFov3.add(player.position), "#cdcdcd");
-                this.drawLine(context, player.position, vFov4.add(player.position), "#cdcdcd");
-                
-                // Reflect sprite vector to center vector (center of the fov)
-                var spriteLength = spriteVector.length();
-                var normSprite = spriteVector.normalize();
-                var normCenter = playerVector.normalize();
-                var dot = normCenter.dot(normSprite);
-                spriteLength *= dot;
-                normCenter.mulThis(spriteLength);
-                this.drawLine(context, player.position, normCenter.add(player.position), "#00ff00");
-                // Center vector from the reflection to the sprite
-                var vectorFromCenter = spriteVector.sub(normCenter);
-                this.drawLine(context, player.position.add(normCenter), vectorFromCenter.add(player.position).add(normCenter), "#0000ff");
-                
-                // Get distance inner fow
-                var norm = normCenter.normalize(); 
-                var angle = norm.dot(vFov3.normalize());
-                var len = normCenter.length();
-                var innerFovLen = Math.tan(Math.acos(angle)) * len;
-                // Get distance outer fow
-                //var angle = norm.dot(vFov4.normalize());
-                //var outerFovLen = Math.tan(Math.acos(angle)) * len;
-                //console.log(innerFovLen + ", " + outerFovLen);
-                var center = innerFovLen;
-                var fovLineLen = innerFovLen * 2;
-                var len = vectorFromCenter.length();
-                if (vectorFromCenter.dot(vFov2) > 0) {
-                    center += len;
+            var z = spriteVector.length();
+            spriteVector = spriteVector.normalize();
+            var dot = spriteVector.dot(center);
+            if (dot >= 0) {
+                var angle = Math.acos(dot);
+                if (angle < this.fov) {
+                    var finalRadians = this.fov / 2;
+                    var diff = spriteVector.sub(center);
+                    finalRadians += diff.dot(right) >= 0 ? angle : -angle;
+                    var x = (1 - (finalRadians / this.fov)) * outputWidth;
+                    this.data.push({z: z, x: x, sprite: sprite});
                 }
-                if (vectorFromCenter.dot(vFov3) > 0) {
-                    center -= len;
-                }
-                console.log(center / fovLineLen);
             }
         }
-        
     }
     
-    render(context) {
+    walls() {
+        var tmpX = 0;
         var radians = player.rotation - this.fov / 2;
         for (var a = 0; a < this.numberOfRays; a++) {
-            var minRayLen = 1 << 16; // 16 bit number enough?
+            var minRayLen = 1 << 30; // 30 bit number enough?
             var minVector = null;
             // Direction line
             var vector = new Vector(200, 0);
             vector.setAngle(radians);
             var rayVector = vector.clone()
-            vector.addThis(player.position);
-            //this.drawLine(context, player.position, vector, "#cdcdcd"); 
+            vector.addThis(player.position); 
             // Calculate ray collision on rows
             var cos = Math.cos(radians);
             var sin = Math.sin(radians);
@@ -123,10 +89,12 @@ class Raycasting {
                 var length = ray.length();
                 var radDiff = player.rotation - radians;
                 var z = Math.cos(radDiff) * length;
-                context.fillStyle = "#00ff00";
-                context.fillRect(origX + minVector.x, origY - minVector.y, 2, 2);
+                this.data.push({z: z, x: tmpX * pixelWidth, sprite:null});
+                //context.fillStyle = "#00ff00";
+                //context.fillRect(origX + minVector.x, origY - minVector.y, 2, 2);
             }
             radians += this.radStep;
+            tmpX++;
         }
     }
     
@@ -149,11 +117,10 @@ class Raycasting {
         return false;
     }
     
-    drawLine(context, orig, dest, color) {
-        context.strokeStyle = color;
-        context.beginPath();
-        context.moveTo(origX + orig.x, origY - orig.y);
-        context.lineTo(origX + dest.x, origY - dest.y);
-        context.stroke();
+    getData() {
+        this.data = [];
+        this.sprites();
+        this.walls();
+        return this.data;
     }
 }

@@ -4,10 +4,10 @@ class Player {
         this.length = length;
         this.position = new Vector(x, y);
         this.velocity = new Vector(0, 0);
-        this.velocityLength = new Vector(50, 50).length();
-        this.friction = 0.95;
+        this.velocityLength = new Vector(25, 25).length();
+        this.friction = 0.90;
         this.rotation = 0;
-        this.radianStep = Math.PI / 4;
+        this.radianStep = Math.PI / 8;
         this.rotateLeftBool = false;
         this.rotateRightBool = false;
         this.forwardBool = false;

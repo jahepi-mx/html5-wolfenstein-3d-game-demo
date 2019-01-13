@@ -16,30 +16,41 @@ and open the template in the editor.
         <script type="text/javascript" src="sprite.js"></script>
         <script type="text/javascript" src="raycasting.js"></script>
         <script>
-            var width = 320;
-            var height = 240;
+            var previewWidth = 600;
+            var previewHeight = 240;
+            var gameResWidth = 320;
+            var gameResHeight = 240;
             var origX = 0;
-            var origY = height;
-            var aspectRatio = width / height;
+            var origY = previewHeight;
+            var aspectRatio = gameResWidth / gameResHeight;
             var prevTime = 0;
-            var canvas, context;
+            var canvas, context, canvasGame, contextGame;
             var player = null;
             var map = null;
             var raycasting = null;
             var sprites = [];
+            var outputWidth = gameResWidth * 2;
+            var pixelWidth = outputWidth / gameResWidth;
+            var outputHeight = outputWidth / aspectRatio;
+            var distToPlane = 0;
             
             window.onload = function() {
                 canvas = document.getElementById("canvas");
                 context = canvas.getContext("2d");
-                canvas.width = width;
-                canvas.height = height;
+                canvas.width = previewWidth;
+                canvas.height = previewHeight;
+                canvasGame = document.getElementById("game");
+                contextGame = canvasGame.getContext("2d");
+                canvasGame.width = outputWidth;
+                canvasGame.height = outputHeight;
                 map = new Map();
                 var playerX = map.tileLength * 1 + map.tileLength / 2;
                 var playerY = map.tileLength * 1 + map.tileLength / 2; 
                 player = new Player(playerX, playerY, 10);
-                sprites.push(new Sprite(map.tileLength * 3 + map.tileLength / 2, map.tileLength * 3 + map.tileLength / 2, 10));
-                //sprites.push(new Sprite(map.tileLength * 6 + map.tileLength / 2, map.tileLength * 1 + map.tileLength / 2, 10));
-                raycasting = new Raycasting(10);
+                sprites.push(new Sprite(map.tileLength * 3 + map.tileLength / 2, map.tileLength * 4, 10));
+                sprites.push(new Sprite(map.tileLength * 8 + map.tileLength / 2, map.tileLength * 3, 10));
+                raycasting = new Raycasting(gameResWidth);
+                distToPlane = (outputWidth / 2) / Math.tan(raycasting.fov / 2);
                 document.onkeydown = onKeyDown;
                 document.onkeyup = onKeyUp;
                 requestAnimationFrame(update);
@@ -49,8 +60,8 @@ and open the template in the editor.
                 var dt = (time - prevTime) / 1000;
                 prevTime = time;
                 var fps = parseInt(1 / dt);
-                context.clearRect(0, 0, width, height);
-                context.fillText(fps, width - 10, 10);
+                context.clearRect(0, 0, previewWidth, previewHeight);
+                context.fillText(fps, previewWidth - 10, 10);
                 for (let tile of map.tiles) {
                     tile.update(dt);
                     tile.render(context);
@@ -61,9 +72,26 @@ and open the template in the editor.
                 }
                 player.update(dt);
                 player.render(context);
-                raycasting.update(dt);
-                raycasting.render(context);
-                raycasting.renderSprites(context);
+                var tmpData = raycasting.getData();
+                
+                tmpData.sort(function(o1, o2) {
+                    return o1.z < o2.z ? 1 : o1.z > o2.z ? -1 : 0;
+                });
+
+                contextGame.clearRect(0, 0, outputWidth, outputHeight);
+                contextGame.fillText(fps, outputWidth - 10, 10);
+                for (let data of tmpData) {
+                    var halfY = outputHeight / 2;
+                    if (data.sprite === null) {
+                        var h = 30 / data.z * distToPlane;
+                        contextGame.fillStyle = "#000000";
+                        contextGame.fillRect(data.x, halfY - h / 2, pixelWidth, h);
+                    } else {
+                        contextGame.fillStyle = "#ff0000";
+                        var len = 10 / data.z * distToPlane;
+                        contextGame.fillRect(data.x - len / 2, halfY - len / 2, len, len);
+                    }
+                }
                 requestAnimationFrame(update);
             }
             
@@ -82,5 +110,6 @@ and open the template in the editor.
     </head>
     <body>
         <canvas id="canvas"></canvas>
+        <canvas id="game"></canvas>
     </body>
 </html>
