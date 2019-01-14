@@ -4,7 +4,8 @@ class Enemy {
         this.length = 10;
         this.moves = [[-1, 0], [0, -1], [1, 0], [0, 1]];
         this.position = new Vector(map.tileLength * x + map.tileLength / 2, map.tileLength * y + map.tileLength / 2);
-        this.velocity = new Vector(20, 20);
+        this.velocity = new Vector(0, 0);
+        this.velocityTmp = new Vector(20, 20);
         this.searchTime = 0;
         this.searchTimeLimit = 3;
         this.path = [];
@@ -25,23 +26,26 @@ class Enemy {
         if (this.pathTo !== null) {
             var translate = this.pathTo.sub(this.position);
             if (translate.dot(translate) <= 10) {
+                this.velocity.x = 0;
+                this.velocity.y = 0;
                 if (this.path.length > 0) {
                     this.pathTo = this.path.pop();
                 }
             } else {
                 if (translate.y < 0) {
-                    this.position.y -= this.velocity.y * dt;
+                    this.velocity.y = -this.velocityTmp.y;
                 } else {
-                    this.position.y += this.velocity.y * dt;
+                    this.velocity.y = this.velocityTmp.y;
                 }
                 
                 if (translate.x < 0) {
-                    this.position.x -= this.velocity.x * dt;
+                    this.velocity.x = -this.velocityTmp.x;
                 } else {
-                    this.position.x += this.velocity.x * dt;
+                    this.velocity.x = this.velocityTmp.x;
                 }
             }
         }
+        this.position.addThis(this.velocity.mul(dt));
     }
     
     pathfinding() {
@@ -88,6 +92,7 @@ class Enemy {
                 this.path.push(map.tiles[index].position);
                 index = parents[index];
             }
+            this.path.push(map.tiles[index].position);
         }
     }
     
