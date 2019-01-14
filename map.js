@@ -17,7 +17,7 @@ class Map {
             var y = parseInt(a / this.width);
             var value = data[a];
             var newY = (this.height - 1) - y;
-            this.tiles[newY * this.width + x] = new Tile(this.tileLength * x + this.tileLength / 2, this.tileLength * newY + this.tileLength / 2, this.tileLength, value === 0);
+            this.tiles[newY * this.width + x] = new Tile(x, newY, this.tileLength, value === 0);
         }
     }
 }

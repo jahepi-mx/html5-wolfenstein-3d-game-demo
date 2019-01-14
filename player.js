@@ -11,9 +11,19 @@ class Player {
         this.rotateLeftBool = false;
         this.rotateRightBool = false;
         this.forwardBool = false;
+        this.shootBool = false;
+        this.shootTime = 0;
+        this.shootTimeLimit = 1;
+        this.bullets = [];
     }
     
     update(dt) {
+        
+        this.shootTime += dt;
+        if (this.shootTime >= this.shootTimeLimit && this.shootBool) {
+            this.bullets.push(new Bullet(this.position.clone()));
+            this.shootTime = 0;
+        }
         
         if (this.forwardBool) {
             this.velocity.x = this.velocityLength;
@@ -76,7 +86,15 @@ class Player {
         if (collide) {
             this.position = prevPosition;
         }
-        this.velocity.mulThis(this.friction); 
+        this.velocity.mulThis(this.friction);
+        
+        for (var a = this.bullets.length - 1; a >= 0; a--) {
+            var bullet = this.bullets[a];
+            bullet.update(dt);
+            if (bullet.collided) {
+                this.bullets.splice(a, 1);
+            }
+        }
     }
     
     render(context) {
@@ -92,6 +110,10 @@ class Player {
         context.moveTo(origX + this.position.x, origY - this.position.y);
         context.lineTo(origX + vector.x, origY - vector.y);
         context.stroke();
+        
+        for (let bullet of this.bullets) {
+            bullet.render(context);
+        }
     }
     
     rotateLeft(bool) {
@@ -104,6 +126,10 @@ class Player {
     
     forward(bool) {
         this.forwardBool = bool;
+    }
+    
+    shoot(bool) {
+        this.shootBool = bool;
     }
 }
 

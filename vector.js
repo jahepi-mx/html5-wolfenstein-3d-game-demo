@@ -65,6 +65,10 @@ class Vector {
         return this;
     }
     
+    equals(vector) {
+        return this.x === vector.x && this.y === vector.y;
+    }
+    
     clone() {
         return new Vector(this.x, this.y);
     }

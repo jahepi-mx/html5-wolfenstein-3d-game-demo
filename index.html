@@ -14,6 +14,9 @@ and open the template in the editor.
         <script type="text/javascript" src="tile.js"></script>
         <script type="text/javascript" src="map.js"></script>
         <script type="text/javascript" src="sprite.js"></script>
+        <script type="text/javascript" src="bullet.js"></script>
+        <script type="text/javascript" src="priorityqueue.js"></script>
+        <script type="text/javascript" src="enemy.js"></script>
         <script type="text/javascript" src="raycasting.js"></script>
         <script>
             var previewWidth = 600;
@@ -27,6 +30,7 @@ and open the template in the editor.
             var canvas, context, canvasGame, contextGame;
             var player = null;
             var map = null;
+            var enemy = null;
             var raycasting = null;
             var sprites = [];
             var outputWidth = gameResWidth * 2;
@@ -51,6 +55,7 @@ and open the template in the editor.
                 sprites.push(new Sprite(map.tileLength * 8 + map.tileLength / 2, map.tileLength * 3, 10));
                 raycasting = new Raycasting(gameResWidth);
                 distToPlane = (outputWidth / 2) / Math.tan(raycasting.fov / 2);
+                enemy = new Enemy(6, 4);
                 document.onkeydown = onKeyDown;
                 document.onkeyup = onKeyUp;
                 requestAnimationFrame(update);
@@ -77,7 +82,10 @@ and open the template in the editor.
                 tmpData.sort(function(o1, o2) {
                     return o1.z < o2.z ? 1 : o1.z > o2.z ? -1 : 0;
                 });
-
+                
+                enemy.update(dt);
+                enemy.render(context);
+                /*
                 contextGame.clearRect(0, 0, outputWidth, outputHeight);
                 contextGame.fillText(fps, outputWidth - 10, 10);
                 for (let data of tmpData) {
@@ -92,6 +100,7 @@ and open the template in the editor.
                         contextGame.fillRect(data.x - len / 2, halfY - len / 2, len, len);
                     }
                 }
+                */
                 requestAnimationFrame(update);
             }
             
@@ -99,12 +108,14 @@ and open the template in the editor.
                 if (evt.keyCode === 38) player.forward(true);
                 if (evt.keyCode === 37) player.rotateLeft(true);
                 if (evt.keyCode === 39) player.rotateRight(true);
+                if (evt.keyCode === 32) player.shoot(true);
             }
             
             function onKeyUp(evt) {
                 if (evt.keyCode === 38) player.forward(false);
                 if (evt.keyCode === 37) player.rotateLeft(false);
                 if (evt.keyCode === 39) player.rotateRight(false);
+                if (evt.keyCode === 32) player.shoot(false);
             }
         </script>
     </head>

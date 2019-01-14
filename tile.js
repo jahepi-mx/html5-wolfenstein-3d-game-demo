@@ -1,7 +1,8 @@
 class Tile {
     constructor(x, y, length, walkable) {
         this.length = length;
-        this.position = new Vector(x, y);
+        this.position = new Vector(this.length * x + this.length / 2, this.length * y + this.length / 2);
+        this.mapPosition = new Vector(x, y);
         this.walkable = walkable;
     }
     
