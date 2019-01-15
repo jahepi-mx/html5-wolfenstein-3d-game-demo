@@ -18,6 +18,7 @@ class Raycasting {
             spriteVector = spriteVector.normalize();
             var dot = spriteVector.dot(center);
             if (dot >= 0) {
+                dot = dot > 1 ? 1 : dot < -1 ? -1 : dot;
                 var angle = Math.acos(dot);
                 if (angle < this.fov) {
                     var finalRadians = this.fov / 2;
