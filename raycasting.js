@@ -4,7 +4,7 @@ class Raycasting {
         this.fov = 60 * Math.PI / 180;
         this.numberOfRays = numberOfRays;
         this.radStep = this.fov / (this.numberOfRays - 1);
-        this.tileDirs = [[0, 0], [1, 0], [1, 1], [0, 1], [-1, 1], [-1, 0], [-1, -1], [0, -1], [1, -1]];
+        //this.tileDirs = [[0, 0], [1, 0], [1, 1], [0, 1], [-1, 1], [-1, 0], [-1, -1], [0, -1], [1, -1]];
         this.tileDirs = [[0, 0], [1, 0], [0, 1], [-1, 0], [0, -1]];
         this.data = [];
     }
@@ -32,7 +32,7 @@ class Raycasting {
         }
     }
     
-    walls() {
+    wallsAndDoors() {
         var tmpX = 0;
         var radians = player.rotation - this.fov / 2;
         for (var a = 0; a < this.numberOfRays; a++) {
@@ -58,7 +58,7 @@ class Raycasting {
                     vector.addThis(player.position);
                     // Check if ray point collide with a door
                     var newRayDoorVector = vector.add(doorVector);
-                    var door = this.collideDoor(newRayDoorVector, 3);
+                    var door = this.collideDoor(newRayDoorVector, MAP_DOOR_ROW);
                     if (door !== null && door.isPixelVisible(newRayDoorVector)) {
                         var z = this.getFixedZ(newRayDoorVector, radians);
                         this.data.push({z: z, x: tmpX * pixelWidth, sprite:null, door:true});
@@ -85,7 +85,7 @@ class Raycasting {
                     vector.addThis(player.position);
                     // Check if ray point collide with a door
                     var newRayDoorVector = vector.add(doorVector);
-                    var door = this.collideDoor(newRayDoorVector, 2);
+                    var door = this.collideDoor(newRayDoorVector, MAP_DOOR_COL);
                     if (door !== null && door.isPixelVisible(newRayDoorVector)) {
                         var z = this.getFixedZ(newRayDoorVector, radians);
                         this.data.push({z: z, x: tmpX * pixelWidth, sprite:null, door:true});
@@ -126,9 +126,9 @@ class Raycasting {
             var newX = tileDir[0] + xp;
             var newY = tileDir[1] + yp;
             if (newX >= 0 && newX < map.width && newY >= 0 && newY < map.height) {
-                var tile = map.tiles[newY * map.width + newX];
-                if (!tile.walkable) {
-                    var diff = vector.sub(tile.position);
+                var wall = map.walls[newY * map.width + newX];
+                if (wall !== undefined) {
+                    var diff = vector.sub(wall.position);
                     if (Math.abs(diff.y) <= map.tileLength / 2  && Math.abs(diff.x) <= map.tileLength / 2) {
                         return true;
                     }
@@ -160,7 +160,7 @@ class Raycasting {
     getData() {
         this.data = [];
         this.sprites();
-        this.walls();
+        this.wallsAndDoors();
         return this.data;
     }
 }

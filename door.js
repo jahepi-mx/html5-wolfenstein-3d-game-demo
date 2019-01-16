@@ -1,9 +1,6 @@
-class Door {
-    constructor(x, y, length, type) {
-        this.type = type;
-        this.length = length;
-        this.position = new Vector(this.length * x + this.length / 2, this.length * y + this.length / 2);
-        this.mapPosition = new Vector(x, y);
+class Door extends Tile {
+    constructor(x, y, type, length) {
+        super(x, y, type, length, false);
         this.openRange = new Vector(0, 0);
         this.velocity = new Vector(20, 0);
     }
@@ -23,14 +20,14 @@ class Door {
     }
     
     isPixelVisible(vector) {
-        if (this.type === 2) {
+        if (this.type === MAP_DOOR_COL) {
             var pos = vector.y % this.length;
             pos = pos / this.length * 100;
             if (pos >= this.openRange.x) {
                 return true;
             }
         }
-        if (this.type === 3) {
+        if (this.type === MAP_DOOR_ROW) {
             var pos = vector.x % this.length;
             pos = pos / this.length * 100;
             if (pos >= this.openRange.x) {
@@ -41,6 +38,7 @@ class Door {
     }
     
     render(context) {
-        
+        context.fillStyle = "#ffe6e6";
+        context.fillRect(origX + (this.position.x - this.length / 2), origY - (this.position.y + this.length / 2), this.length, this.length);
     }
 }

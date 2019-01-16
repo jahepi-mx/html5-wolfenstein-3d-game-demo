@@ -1,29 +1,19 @@
+let MAP_EMPTY = 0;
+let MAP_WALL = 1;
+let MAP_DOOR_COL = 2;
+let MAP_DOOR_ROW = 3;
+
 class Map {
     constructor() {
         var map = [
             1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,
-            1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,
-            1,0,0,0,0,1,0,0,0,0,1,0,1,0,0,1,
-            1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,
+            1,0,0,0,0,2,0,0,0,0,0,0,0,0,0,1,
+            1,0,0,0,0,1,0,0,0,0,1,3,1,0,0,1,
+            1,0,0,0,0,0,0,0,0,0,2,0,0,0,0,1,
             1,0,0,1,1,0,0,0,0,0,1,0,0,0,0,1,
             1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,
         ];
-        var walls = [
-            1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,
-            1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,
-            1,0,0,0,0,1,0,0,0,0,1,0,1,0,0,1,
-            1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,
-            1,0,0,1,1,0,0,0,0,0,1,0,0,0,0,1,
-            1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,
-        ];
-        var doors = [
-            0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
-            0,0,0,0,0,2,0,0,0,0,0,0,0,0,0,0,
-            0,0,0,0,0,0,0,0,0,0,0,3,0,0,0,0,
-            0,0,0,0,0,0,0,0,0,0,2,0,0,0,0,0,
-            0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
-            0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
-        ];
+        
         this.tileLength = 30;
         this.width = 16;
         this.height = 6;
@@ -35,12 +25,20 @@ class Map {
             var y = parseInt(a / this.width);
             var value = map[a];
             var newY = (this.height - 1) - y;
-            this.tiles[newY * this.width + x] = new Tile(x, newY, this.tileLength, value === 0);
             
-            var door = doors[a];
-            if (door > 0) {
-                this.doors[newY * this.width + x] = new Door(x, newY, this.tileLength, door);
+            var tile = null;
+            if (value === MAP_WALL || value === MAP_EMPTY) {
+                tile = new Tile(x, newY, value, this.tileLength, value === 0);
+                if (value === MAP_WALL) {
+                    this.walls[newY * this.width + x] = tile;
+                }
             }
+            if (value === MAP_DOOR_ROW || value === MAP_DOOR_COL) {
+                tile = new Door(x, newY, value, this.tileLength);
+                this.doors[newY * this.width + x] = tile;
+            }
+            
+            this.tiles[newY * this.width + x] = tile;
         }
     }
 }

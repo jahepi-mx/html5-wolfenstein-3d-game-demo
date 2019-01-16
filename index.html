@@ -57,6 +57,7 @@ and open the template in the editor.
                 raycasting = new Raycasting(gameResWidth);
                 distToPlane = (outputWidth / 2) / Math.tan(raycasting.fov / 2);
                 enemy = new Enemy(6, 4);
+                sprites.push(enemy);
                 document.onkeydown = onKeyDown;
                 document.onkeyup = onKeyUp;
                 requestAnimationFrame(update);
@@ -68,15 +69,9 @@ and open the template in the editor.
                 var fps = parseInt(1 / dt);
                 context.clearRect(0, 0, previewWidth, previewHeight);
                 context.fillText(fps, previewWidth - 10, 10);
-                var a = 0;
                 for (let tile of map.tiles) {
                     tile.update(dt);
                     //tile.render(context);
-                    
-                    if (map.doors[a] !== undefined) {
-                        map.doors[a].update(dt);
-                    }
-                    a++;
                 }
                 for (let sprite of sprites) {
                     sprite.update(dt);
@@ -108,7 +103,7 @@ and open the template in the editor.
                     } else {
                         contextGame.fillStyle = "#f1f1f1";
                         var len = 10 / data.z * distToPlane;
-                        //contextGame.fillRect(data.x - len / 2, halfY - len / 2, len, len);
+                        contextGame.fillRect(data.x - len / 2, halfY - len / 2, len, len);
                     }
                 }
                 
@@ -120,6 +115,7 @@ and open the template in the editor.
                 if (evt.keyCode === 37) player.rotateLeft(true);
                 if (evt.keyCode === 39) player.rotateRight(true);
                 if (evt.keyCode === 32) player.shoot(true);
+                if (evt.keyCode === 69) player.openDoor(true);
             }
             
             function onKeyUp(evt) {
@@ -127,6 +123,7 @@ and open the template in the editor.
                 if (evt.keyCode === 37) player.rotateLeft(false);
                 if (evt.keyCode === 39) player.rotateRight(false);
                 if (evt.keyCode === 32) player.shoot(false);
+                if (evt.keyCode === 69) player.openDoor(false);
             }
         </script>
     </head>

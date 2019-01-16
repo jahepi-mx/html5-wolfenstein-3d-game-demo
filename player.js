@@ -7,10 +7,11 @@ class Player {
         this.velocityLength = new Vector(25, 25).length();
         this.friction = 0.90;
         this.rotation = 0;
-        this.radianStep = Math.PI / 8;
+        this.radianStep = Math.PI / 2;
         this.rotateLeftBool = false;
         this.rotateRightBool = false;
         this.forwardBool = false;
+        this.openDoorBool = false;
         this.shootBool = false;
         this.shootTime = 0;
         this.shootTimeLimit = 1;
@@ -38,8 +39,28 @@ class Player {
             this.rotation += this.radianStep * dt;
         }
         
+        if (this.openDoorBool) {
+            var x = parseInt(this.position.x / map.tileLength);
+            var y = parseInt(this.position.y / map.tileLength);
+            for (let move of this.moves) {
+                var newX = move[0] + x;
+                var newY = move[1] + y;
+                if (newX >= 0 && newX < map.width && newY >= 0 && newY < map.height) {
+                    var tile = map.tiles[newY * map.width + newX];
+                    if (tile instanceof Door && !tile.walkable) {
+                        var playerDir = new Vector(1, 0).setAngle(this.rotation);
+                        var diff = tile.position.sub(player.position);
+                        // Open door if player is facing the door and it is really close to it.
+                        if (playerDir.dot(diff) > 0 && diff.dot(diff) <= 450) {
+                            tile.walkable = true;
+                        }
+                    }
+                }
+            }
+        }
+        
         this.velocity.setAngle(this.rotation);
-
+        
         var prevPosition = this.position.clone();
         this.position.x += this.velocity.x * dt;
         var collide = false;
@@ -130,6 +151,10 @@ class Player {
     
     shoot(bool) {
         this.shootBool = bool;
+    }
+    
+    openDoor(bool) {
+        this.openDoorBool = bool;
     }
 }
 
