@@ -17,6 +17,7 @@ and open the template in the editor.
         <script type="text/javascript" src="bullet.js"></script>
         <script type="text/javascript" src="priorityqueue.js"></script>
         <script type="text/javascript" src="enemy.js"></script>
+        <script type="text/javascript" src="door.js"></script>
         <script type="text/javascript" src="raycasting.js"></script>
         <script>
             var previewWidth = 600;
@@ -33,7 +34,7 @@ and open the template in the editor.
             var enemy = null;
             var raycasting = null;
             var sprites = [];
-            var outputWidth = gameResWidth * 2;
+            var outputWidth = gameResWidth; //gameResWidth * 2;
             var pixelWidth = outputWidth / gameResWidth;
             var outputHeight = outputWidth / aspectRatio;
             var distToPlane = 0;
@@ -67,40 +68,50 @@ and open the template in the editor.
                 var fps = parseInt(1 / dt);
                 context.clearRect(0, 0, previewWidth, previewHeight);
                 context.fillText(fps, previewWidth - 10, 10);
+                var a = 0;
                 for (let tile of map.tiles) {
                     tile.update(dt);
-                    tile.render(context);
+                    //tile.render(context);
+                    
+                    if (map.doors[a] !== undefined) {
+                        map.doors[a].update(dt);
+                    }
+                    a++;
                 }
                 for (let sprite of sprites) {
                     sprite.update(dt);
-                    sprite.render(context);
+                    //sprite.render(context);
                 }
                 player.update(dt);
-                player.render(context);
+                //player.render(context);
                 var tmpData = raycasting.getData();
                 
                 tmpData.sort(function(o1, o2) {
                     return o1.z < o2.z ? 1 : o1.z > o2.z ? -1 : 0;
                 });
                 
-                enemy.update(dt);
-                enemy.render(context);
-                /*
+                //enemy.update(dt);
+                //enemy.render(context);
+                
                 contextGame.clearRect(0, 0, outputWidth, outputHeight);
                 contextGame.fillText(fps, outputWidth - 10, 10);
                 for (let data of tmpData) {
                     var halfY = outputHeight / 2;
-                    if (data.sprite === null) {
+                    if (data.door) {
                         var h = 30 / data.z * distToPlane;
-                        contextGame.fillStyle = "#000000";
+                        contextGame.fillStyle = "#EFEFEF";
+                        contextGame.fillRect(data.x, halfY - h / 2, pixelWidth, h);
+                    } else if (data.sprite === null) {
+                        var h = 30 / data.z * distToPlane;
+                        contextGame.fillStyle = "#FAFAFA";
                         contextGame.fillRect(data.x, halfY - h / 2, pixelWidth, h);
                     } else {
-                        contextGame.fillStyle = "#ff0000";
+                        contextGame.fillStyle = "#f1f1f1";
                         var len = 10 / data.z * distToPlane;
-                        contextGame.fillRect(data.x - len / 2, halfY - len / 2, len, len);
+                        //contextGame.fillRect(data.x - len / 2, halfY - len / 2, len, len);
                     }
                 }
-                */
+                
                 requestAnimationFrame(update);
             }
             

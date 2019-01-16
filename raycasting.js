@@ -5,6 +5,7 @@ class Raycasting {
         this.numberOfRays = numberOfRays;
         this.radStep = this.fov / (this.numberOfRays - 1);
         this.tileDirs = [[0, 0], [1, 0], [1, 1], [0, 1], [-1, 1], [-1, 0], [-1, -1], [0, -1], [1, -1]];
+        this.tileDirs = [[0, 0], [1, 0], [0, 1], [-1, 0], [0, -1]];
         this.data = [];
     }
     
@@ -25,7 +26,7 @@ class Raycasting {
                     var diff = spriteVector.sub(center);
                     finalRadians += diff.dot(right) >= 0 ? angle : -angle;
                     var x = (1 - (finalRadians / this.fov)) * outputWidth;
-                    this.data.push({z: z, x: x, sprite: sprite});
+                    this.data.push({z: z, x: x, sprite: sprite, door:false});
                 }
             }
         }
@@ -41,10 +42,11 @@ class Raycasting {
             var vector = new Vector(200, 0);
             vector.setAngle(radians);
             var rayVector = vector.clone()
-            vector.addThis(player.position); 
+            //vector.addThis(player.position); 
             // Calculate ray collision on rows
             var cos = Math.cos(radians);
             var sin = Math.sin(radians);
+            var doorVector = new Vector(cos, sin).mul(map.tileLength / 2);
             for (var y = 0; y <= map.height; y++) {
                 var newY = map.tileLength * y - player.position.y;
                 var hyp = newY / sin;
@@ -54,8 +56,15 @@ class Raycasting {
                 var dot = vector.dot(rayVector);
                 if (dot > 0) {
                     vector.addThis(player.position);
-                    // Check if ray point collide with a tile     
-                    if (this.collide(vector)) {
+                    // Check if ray point collide with a door
+                    var newRayDoorVector = vector.add(doorVector);
+                    var door = this.collideDoor(newRayDoorVector, 3);
+                    if (door !== null && door.isPixelVisible(newRayDoorVector)) {
+                        var z = this.getFixedZ(newRayDoorVector, radians);
+                        this.data.push({z: z, x: tmpX * pixelWidth, sprite:null, door:true});
+                    }
+                    // Check if ray point collide with a wall     
+                    if (this.collideWall(vector)) {
                         var diff = vector.sub(player.position);
                         if (diff.dot(diff) < minRayLen) {
                             minRayLen = diff.dot(diff);
@@ -74,8 +83,15 @@ class Raycasting {
                 var dot = vector.dot(rayVector);
                 if (dot > 0) {
                     vector.addThis(player.position);
-                    // Check if ray point collide with a tile
-                    if (this.collide(vector)) {
+                    // Check if ray point collide with a door
+                    var newRayDoorVector = vector.add(doorVector);
+                    var door = this.collideDoor(newRayDoorVector, 2);
+                    if (door !== null && door.isPixelVisible(newRayDoorVector)) {
+                        var z = this.getFixedZ(newRayDoorVector, radians);
+                        this.data.push({z: z, x: tmpX * pixelWidth, sprite:null, door:true});
+                    }
+                    // Check if ray point collide with a wall
+                    if (this.collideWall(vector)) {
                         var diff = vector.sub(player.position);
                         if (diff.dot(diff) < minRayLen) {
                             minRayLen = diff.dot(diff);
@@ -85,12 +101,8 @@ class Raycasting {
                 }
             }        
             if (minVector !== null) {
-                // Calculate distance of the ray avoiding distortion (fish eye effect)
-                var ray = minVector.sub(player.position);
-                var length = ray.length();
-                var radDiff = player.rotation - radians;
-                var z = Math.cos(radDiff) * length;
-                this.data.push({z: z, x: tmpX * pixelWidth, sprite:null});
+                var z = this.getFixedZ(minVector, radians);
+                this.data.push({z: z, x: tmpX * pixelWidth, sprite:null, door:false});
                 //context.fillStyle = "#00ff00";
                 //context.fillRect(origX + minVector.x, origY - minVector.y, 2, 2);
             }
@@ -99,7 +111,15 @@ class Raycasting {
         }
     }
     
-    collide(vector) {
+    getFixedZ(vector, radians) {
+        // Calculate distance of the ray avoiding distortion (fish eye effect)
+        var ray = vector.sub(player.position);
+        var length = ray.length();
+        var radDiff = player.rotation - radians;
+        return Math.cos(radDiff) * length;
+    }
+    
+    collideWall(vector) {
         var xp = parseInt(vector.x / map.tileLength);
         var yp = parseInt(vector.y / map.tileLength);
         for (let tileDir of this.tileDirs) {
@@ -116,6 +136,25 @@ class Raycasting {
             }
         }
         return false;
+    }
+    
+    collideDoor(vector, type) {
+        var xp = parseInt(vector.x / map.tileLength);
+        var yp = parseInt(vector.y / map.tileLength);
+        for (let tileDir of this.tileDirs) {
+            var newX = tileDir[0] + xp;
+            var newY = tileDir[1] + yp;
+            if (newX >= 0 && newX < map.width && newY >= 0 && newY < map.height) {
+                var door = map.doors[newY * map.width + newX];
+                if (door !== undefined && door.type === type) {
+                    var diff = vector.sub(door.position);
+                    if (Math.abs(diff.y) <= map.tileLength / 2  && Math.abs(diff.x) <= map.tileLength / 2) {
+                        return door;
+                    }
+                }
+            }
+        }
+        return null;
     }
     
     getData() {
