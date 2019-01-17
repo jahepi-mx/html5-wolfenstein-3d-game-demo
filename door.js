@@ -3,10 +3,19 @@ class Door extends Tile {
         super(x, y, type, length, false);
         this.openRange = new Vector(0, 0);
         this.velocity = new Vector(20, 0);
+        this.openBool = false;
     }
     
     update(dt) {
         
+        if (this.openBool) {
+            this.openRange.addThis(this.velocity.mul(dt));
+            if (this.openRange.x > 100) {
+                this.openRange.x = 100;
+                this.walkable = true;
+            }
+        }
+        /*
         this.openRange.addThis(this.velocity.mul(dt));
         if (this.openRange.x > 100) {
             this.openRange.x = 100;
@@ -17,6 +26,11 @@ class Door extends Tile {
             this.openRange.x = 0;
             this.velocity.mulThis(-1);
         }
+        */
+    }
+    
+    open() {
+        this.openBool = true;
     }
     
     isPixelVisible(vector) {

@@ -32,16 +32,21 @@ class Enemy {
                     this.pathTo = this.path.pop();
                 }
             } else {
-                if (translate.y < 0) {
+                var margin = 2;
+                if (translate.y < -margin) {
                     this.velocity.y = -this.velocityTmp.y;
-                } else {
+                } else if (translate.y > margin) {
                     this.velocity.y = this.velocityTmp.y;
+                } else {
+                    this.velocity.y = 0;
                 }
                 
-                if (translate.x < 0) {
+                if (translate.x < -margin) {
                     this.velocity.x = -this.velocityTmp.x;
-                } else {
+                } else if (translate.x > margin) {
                     this.velocity.x = this.velocityTmp.x;
+                } else {
+                    this.velocity.x = 0;
                 }
             }
         }

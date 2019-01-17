@@ -51,8 +51,8 @@ class Player {
                         var playerDir = new Vector(1, 0).setAngle(this.rotation);
                         var diff = tile.position.sub(player.position);
                         // Open door if player is facing the door and it is really close to it.
-                        if (playerDir.dot(diff) > 0 && diff.dot(diff) <= 450) {
-                            tile.walkable = true;
+                        if (playerDir.dot(diff) > 0 && diff.dot(diff) <= 1550) {
+                            tile.open();
                         }
                     }
                 }

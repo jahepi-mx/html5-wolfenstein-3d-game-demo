@@ -34,7 +34,7 @@ and open the template in the editor.
             var enemy = null;
             var raycasting = null;
             var sprites = [];
-            var outputWidth = gameResWidth; //gameResWidth * 2;
+            var outputWidth = gameResWidth * 2;
             var pixelWidth = outputWidth / gameResWidth;
             var outputHeight = outputWidth / aspectRatio;
             var distToPlane = 0;
@@ -71,14 +71,14 @@ and open the template in the editor.
                 context.fillText(fps, previewWidth - 10, 10);
                 for (let tile of map.tiles) {
                     tile.update(dt);
-                    //tile.render(context);
+                    tile.render(context);
                 }
                 for (let sprite of sprites) {
                     sprite.update(dt);
-                    //sprite.render(context);
+                    sprite.render(context);
                 }
                 player.update(dt);
-                //player.render(context);
+                player.render(context);
                 var tmpData = raycasting.getData();
                 
                 tmpData.sort(function(o1, o2) {
@@ -94,14 +94,14 @@ and open the template in the editor.
                     var halfY = outputHeight / 2;
                     if (data.door) {
                         var h = 30 / data.z * distToPlane;
-                        contextGame.fillStyle = "#EFEFEF";
+                        contextGame.fillStyle = "#00ff00";
                         contextGame.fillRect(data.x, halfY - h / 2, pixelWidth, h);
                     } else if (data.sprite === null) {
                         var h = 30 / data.z * distToPlane;
-                        contextGame.fillStyle = "#FAFAFA";
+                        contextGame.fillStyle = "#000";
                         contextGame.fillRect(data.x, halfY - h / 2, pixelWidth, h);
                     } else {
-                        contextGame.fillStyle = "#f1f1f1";
+                        contextGame.fillStyle = "#aabbcc";
                         var len = 10 / data.z * distToPlane;
                         contextGame.fillRect(data.x - len / 2, halfY - len / 2, len, len);
                     }
