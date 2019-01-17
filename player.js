@@ -32,11 +32,11 @@ class Player {
         }
         
         if (this.rotateLeftBool) {
-            this.rotation -= this.radianStep * dt; 
+            this.rotation += this.radianStep * dt; 
         }
         
         if (this.rotateRightBool) {
-            this.rotation += this.radianStep * dt;
+            this.rotation -= this.radianStep * dt;
         }
         
         if (this.openDoorBool) {

@@ -4,7 +4,6 @@ class Raycasting {
         this.fov = 60 * Math.PI / 180;
         this.numberOfRays = numberOfRays;
         this.radStep = this.fov / (this.numberOfRays - 1);
-        //this.tileDirs = [[0, 0], [1, 0], [1, 1], [0, 1], [-1, 1], [-1, 0], [-1, -1], [0, -1], [1, -1]];
         this.tileDirs = [[0, 0], [1, 0], [0, 1], [-1, 0], [0, -1]];
         this.data = [];
     }
@@ -25,7 +24,7 @@ class Raycasting {
                     var finalRadians = this.fov / 2;
                     var diff = spriteVector.sub(center);
                     finalRadians += diff.dot(right) >= 0 ? angle : -angle;
-                    var x = (1 - (finalRadians / this.fov)) * outputWidth;
+                    var x = finalRadians / this.fov * outputWidth;
                     this.data.push({z: z, x: x, sprite: sprite, door:false});
                 }
             }
@@ -34,15 +33,14 @@ class Raycasting {
     
     wallsAndDoors() {
         var tmpX = 0;
-        var radians = player.rotation - this.fov / 2;
+        var radians = player.rotation + this.fov / 2;
         for (var a = 0; a < this.numberOfRays; a++) {
             var minRayLen = 1 << 30; // 30 bit number enough?
             var minVector = null;
             // Direction line
             var vector = new Vector(200, 0);
             vector.setAngle(radians);
-            var rayVector = vector.clone()
-            //vector.addThis(player.position); 
+            var rayVector = vector.clone();
             // Calculate ray collision on rows
             var cos = Math.cos(radians);
             var sin = Math.sin(radians);
@@ -106,7 +104,7 @@ class Raycasting {
                 //context.fillStyle = "#00ff00";
                 //context.fillRect(origX + minVector.x, origY - minVector.y, 2, 2);
             }
-            radians += this.radStep;
+            radians -= this.radStep;
             tmpX++;
         }
     }

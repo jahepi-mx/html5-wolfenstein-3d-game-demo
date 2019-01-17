@@ -34,7 +34,7 @@ and open the template in the editor.
             var enemy = null;
             var raycasting = null;
             var sprites = [];
-            var outputWidth = gameResWidth * 2;
+            var outputWidth = gameResWidth; //gameResWidth * 2;
             var pixelWidth = outputWidth / gameResWidth;
             var outputHeight = outputWidth / aspectRatio;
             var distToPlane = 0;
@@ -94,14 +94,14 @@ and open the template in the editor.
                     var halfY = outputHeight / 2;
                     if (data.door) {
                         var h = 30 / data.z * distToPlane;
-                        contextGame.fillStyle = "#00ff00";
+                        contextGame.fillStyle = "#d8d8d8";
                         contextGame.fillRect(data.x, halfY - h / 2, pixelWidth, h);
                     } else if (data.sprite === null) {
                         var h = 30 / data.z * distToPlane;
-                        contextGame.fillStyle = "#000";
+                        contextGame.fillStyle = "#f1f1f1";
                         contextGame.fillRect(data.x, halfY - h / 2, pixelWidth, h);
                     } else {
-                        contextGame.fillStyle = "#aabbcc";
+                        contextGame.fillStyle = "#ffe8e8";
                         var len = 10 / data.z * distToPlane;
                         contextGame.fillRect(data.x - len / 2, halfY - len / 2, len, len);
                     }
