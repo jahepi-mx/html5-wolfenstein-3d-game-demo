@@ -11,6 +11,7 @@ class Player {
         this.rotateLeftBool = false;
         this.rotateRightBool = false;
         this.forwardBool = false;
+        this.backwardBool = false;
         this.openDoorBool = false;
         this.shootBool = false;
         this.shootTime = 0;
@@ -29,6 +30,13 @@ class Player {
         if (this.forwardBool) {
             this.velocity.x = this.velocityLength;
             this.velocity.y = 0;
+            this.velocity.setAngle(this.rotation);
+        }
+        
+        if (this.backwardBool) {
+            this.velocity.x = this.velocityLength;
+            this.velocity.y = 0;
+            this.velocity.setAngle(this.rotation + Math.PI);
         }
         
         if (this.rotateLeftBool) {
@@ -58,8 +66,6 @@ class Player {
                 }
             }
         }
-        
-        this.velocity.setAngle(this.rotation);
         
         var prevPosition = this.position.clone();
         this.position.x += this.velocity.x * dt;
@@ -147,6 +153,10 @@ class Player {
     
     forward(bool) {
         this.forwardBool = bool;
+    }
+    
+    backward(bool) {
+        this.backwardBool = bool;
     }
     
     shoot(bool) {
