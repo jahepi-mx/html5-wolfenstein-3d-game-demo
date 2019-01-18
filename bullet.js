@@ -1,9 +1,9 @@
 class Bullet {
     
-    constructor(position) {
+    constructor(position, direction) {
         this.moves = [[0, 0], [1, 0], [1, 1], [0, 1], [-1, 1], [-1, 0], [-1, -1], [0, -1], [1, -1]];
         this.position = position;
-        this.velocity = new Vector(Math.cos(player.rotation), Math.sin(player.rotation)).mul(30);
+        this.velocity = direction.mul(30);
         this.length = 10;
         this.collided = false;
     }

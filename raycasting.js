@@ -10,8 +10,8 @@ class Raycasting {
     
     sprites() {
         var radians = player.rotation;
-        var center = new Vector(1, 0).setAngle(radians);
-        var right = new Vector(1, 0).setAngle(radians - this.fov / 2);
+        var center = new Vector(1, 0).setUnitAngle(radians);
+        var right = new Vector(1, 0).setUnitAngle(radians - this.fov / 2);
         for (let sprite of sprites) {
             var spriteVector = sprite.position.sub(player.position);
             var z = spriteVector.length();

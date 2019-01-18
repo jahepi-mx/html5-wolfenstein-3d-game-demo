@@ -23,7 +23,7 @@ class Player {
         
         this.shootTime += dt;
         if (this.shootTime >= this.shootTimeLimit && this.shootBool) {
-            this.bullets.push(new Bullet(this.position.clone()));
+            this.bullets.push(new Bullet(this.position.clone(), new Vector(1, 0).setUnitAngle(this.rotation)));
             this.shootTime = 0;
         }
         

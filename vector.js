@@ -57,6 +57,12 @@ class Vector {
         return this;
     }
     
+    setUnitAngle(radians) {
+        this.x = Math.cos(radians);
+        this.y = Math.sin(radians);
+        return this;
+    }
+    
     addAngle(radians) {
         var length = this.length();
         var angle = this.getAngle() + radians;

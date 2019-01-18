@@ -71,14 +71,14 @@ and open the template in the editor.
                 context.fillText(fps, previewWidth - 10, 10);
                 for (let tile of map.tiles) {
                     tile.update(dt);
-                    //tile.render(context);
+                    tile.render(context);
                 }
                 for (let sprite of sprites) {
                     sprite.update(dt);
-                    //sprite.render(context);
+                    sprite.render(context);
                 }
                 player.update(dt);
-                //player.render(context);
+                player.render(context);
                 var tmpData = raycasting.getData();
                 
                 tmpData.sort(function(o1, o2) {

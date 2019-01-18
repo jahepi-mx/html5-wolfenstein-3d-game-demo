@@ -6,10 +6,15 @@ class Enemy {
         this.position = new Vector(map.tileLength * x + map.tileLength / 2, map.tileLength * y + map.tileLength / 2);
         this.velocity = new Vector(0, 0);
         this.velocityTmp = new Vector(20, 20);
+        this.directionVectorFrom = new Vector(1, 0);
+        this.directionVectorTo = new Vector(0, 0);
         this.searchTime = 0;
         this.searchTimeLimit = 3;
         this.path = [];
         this.pathTo = null;
+        this.bullets = [];
+        this.shootTime = 0;
+        this.shootTimeLimit = 1;
     }
     
     update(dt) {
@@ -19,17 +24,35 @@ class Enemy {
             this.searchTime = 0;
         }
         
+        var playerVector = player.position.sub(this.position);
+        if (playerVector.dot(playerVector) <= 1000) {
+            this.path = [];
+            this.pathTo = null;
+            this.velocity.mulThis(0);
+            this.directionVectorTo = playerVector;
+            this.shootTime += dt;
+            if (this.shootTime >= this.shootTimeLimit) {
+                this.bullets.push(new Bullet(this.position.clone(), new Vector(1, 0).setUnitAngle(this.directionVectorFrom.getAngle())));
+                this.shootTime = 0;
+            }
+        } else {
+            this.shootTime = 0;
+        }
+        
+        this.calculateDirection(dt);
+        
         if (this.path.length > 0 && this.pathTo === null) {
             this.pathTo = this.path.pop();
         }
         
         if (this.pathTo !== null) {
             var translate = this.pathTo.sub(this.position);
+            this.directionVectorTo = translate;
             if (translate.dot(translate) <= 10) {
-                this.velocity.x = 0;
-                this.velocity.y = 0;
                 if (this.path.length > 0) {
                     this.pathTo = this.path.pop();
+                } else {
+                    this.velocity.mulThis(0);
                 }
             } else {
                 var margin = 2;
@@ -51,6 +74,14 @@ class Enemy {
             }
         }
         this.position.addThis(this.velocity.mul(dt));
+        
+        for (var a = this.bullets.length - 1; a >= 0; a--) {
+            var bullet = this.bullets[a];
+            bullet.update(dt);
+            if (bullet.collided) {
+                this.bullets.splice(a, 1);
+            }
+        }
     }
     
     pathfinding() {
@@ -101,9 +132,36 @@ class Enemy {
         }
     }
     
+    calculateDirection(dt) {
+        var from = this.directionVectorFrom.getAngle();
+        var to = this.directionVectorTo.getAngle();
+        var diff = Math.abs(to - from);
+        if (to < 0 && from > 0) {
+            var tmp = Math.abs((to + Math.PI * 2) - from);
+            if (tmp < diff) to += Math.PI * 2;
+        }
+        if (to > 0 && from < 0) {
+            var tmp = Math.abs(to - (from + Math.PI * 2));
+            if (tmp < diff) from += Math.PI * 2;
+        }
+        from += (to - from) * (dt * 4);
+        this.directionVectorFrom.setAngle(from);
+    }
+    
     render(context) {
-        context.fillStyle = "#0000ff";
+        context.fillStyle = "#f1f1f1";
         context.fillRect(origX + (this.position.x - this.length / 2), origY - (this.position.y + this.length / 2), this.length, this.length);
+        
+        context.strokeStyle = "#111";
+        context.beginPath();
+        context.moveTo(origX + this.position.x, origY - this.position.y);
+        var dirPos = this.directionVectorFrom.mul(10);
+        context.lineTo(origX + (this.position.x + dirPos.x), origY - (this.position.y + dirPos.y));
+        context.stroke();
+        
+        for (let bullet of this.bullets) {
+            bullet.render(context);
+        }
     } 
 }
 
