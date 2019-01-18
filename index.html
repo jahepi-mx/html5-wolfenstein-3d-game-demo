@@ -19,6 +19,9 @@ and open the template in the editor.
         <script type="text/javascript" src="enemy.js"></script>
         <script type="text/javascript" src="door.js"></script>
         <script type="text/javascript" src="raycasting.js"></script>
+        <script type="text/javascript" src="animation.js"></script>
+        <script type="text/javascript" src="assets.js"></script>
+        <script type="text/javascript" src="atlas.js"></script>
         <script>
             var previewWidth = 600;
             var previewHeight = 240;
@@ -58,10 +61,26 @@ and open the template in the editor.
                 distToPlane = (outputWidth / 2) / Math.tan(raycasting.fov / 2);
                 enemy = new Enemy(6, 4);
                 sprites.push(enemy);
+                var assets = Assets.getInstance();
+                assets.loadAll(onLoadAssets, onDownloadAssets);
+            };
+            
+            function onLoadAssets() {
+                var atlas = Atlas.getInstance();
+                atlas.loadAll(onLoadAtlas, onDownloadAtlas);
+            }
+            
+            function onDownloadAssets() {  
+            }
+            
+            function onLoadAtlas() {
                 document.onkeydown = onKeyDown;
                 document.onkeyup = onKeyUp;
                 requestAnimationFrame(update);
-            };
+            }
+            
+            function onDownloadAtlas() {  
+            }
             
             function update(time) {
                 var dt = (time - prevTime) / 1000;
