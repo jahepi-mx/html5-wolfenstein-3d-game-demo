@@ -18,7 +18,8 @@ and open the template in the editor.
         <script type="text/javascript" src="priorityqueue.js"></script>
         <script type="text/javascript" src="enemy.js"></script>
         <script type="text/javascript" src="door.js"></script>
-        <script type="text/javascript" src="raycasting.js"></script>
+        <script type="text/javascript" src="raycaster.js"></script>
+        <script type="text/javascript" src="raycasterrender.js"></script>
         <script type="text/javascript" src="animation.js"></script>
         <script type="text/javascript" src="assets.js"></script>
         <script type="text/javascript" src="atlas.js"></script>
@@ -35,7 +36,8 @@ and open the template in the editor.
             var player = null;
             var map = null;
             var enemy = null;
-            var raycasting = null;
+            var raycaster = null;
+            var raycasterRender = null;
             var sprites = [];
             var outputWidth = gameResWidth; //gameResWidth * 2;
             var pixelWidth = outputWidth / gameResWidth;
@@ -57,8 +59,9 @@ and open the template in the editor.
                 player = new Player(playerX, playerY, 10);
                 sprites.push(new Sprite(map.tileLength * 3 + map.tileLength / 2, map.tileLength * 4, 10));
                 sprites.push(new Sprite(map.tileLength * 8 + map.tileLength / 2, map.tileLength * 3, 10));
-                raycasting = new Raycasting(gameResWidth);
-                distToPlane = (outputWidth / 2) / Math.tan(raycasting.fov / 2);
+                raycaster = new Raycaster(gameResWidth);
+                raycasterRender = new RaycasterRender();
+                distToPlane = (outputWidth / 2) / Math.tan(raycaster.fov / 2);
                 enemy = new Enemy(6, 4);
                 sprites.push(enemy);
                 var assets = Assets.getInstance();
@@ -98,34 +101,13 @@ and open the template in the editor.
                 }
                 player.update(dt);
                 player.render(context);
-                var tmpData = raycasting.getData();
                 
-                tmpData.sort(function(o1, o2) {
-                    return o1.z < o2.z ? 1 : o1.z > o2.z ? -1 : 0;
-                });
+                var data = raycaster.getData();
+                raycasterRender.data = data;
+                raycasterRender.render(contextGame);
                 
                 //enemy.update(dt);
                 //enemy.render(context);
-                
-                contextGame.clearRect(0, 0, outputWidth, outputHeight);
-                contextGame.fillText(fps, outputWidth - 10, 10);
-                for (let data of tmpData) {
-                    var halfY = outputHeight / 2;
-                    if (data.door) {
-                        var h = 30 / data.z * distToPlane;
-                        contextGame.fillStyle = "#d8d8d8";
-                        contextGame.fillRect(data.x, halfY - h / 2, pixelWidth, h);
-                    } else if (data.sprite === null) {
-                        var h = 30 / data.z * distToPlane;
-                        contextGame.fillStyle = "#f1f1f1";
-                        contextGame.fillRect(data.x, halfY - h / 2, pixelWidth, h);
-                    } else {
-                        contextGame.fillStyle = "#ffe8e8";
-                        var len = 10 / data.z * distToPlane;
-                        contextGame.fillRect(data.x - len / 2, halfY - len / 2, len, len);
-                    }
-                }
-                
                 requestAnimationFrame(update);
             }
             

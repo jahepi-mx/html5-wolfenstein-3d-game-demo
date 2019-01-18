@@ -1,4 +1,4 @@
-class Raycasting {
+class Raycaster {
     
     constructor(numberOfRays) {
         this.fov = 60 * Math.PI / 180;
@@ -159,6 +159,11 @@ class Raycasting {
         this.data = [];
         this.sprites();
         this.wallsAndDoors();
+        
+        this.data.sort(function(o1, o2) {
+            return o1.z < o2.z ? 1 : o1.z > o2.z ? -1 : 0;
+        });
+        
         return this.data;
     }
 }
