@@ -6,15 +6,49 @@ class Door extends Tile {
         this.openBool = false;
         this.atlas = Atlas.getInstance();
         this.assets = Assets.getInstance();
+        this.image = "tile56";
+        this.closeTime = 2;
+        this.closeTimeCount = 0;
+        this.isClosingCountdown = false;
     }
     
     update(dt) {
-        
-        if (this.openBool) {
+        if (this.isClosingCountdown) {
+            this.closeTimeCount += dt;
+            if (this.closeTimeCount >= this.closeTime) {
+                // Check if there are enemies or the player to not close the door
+                var success = true;
+                var diff = player.position.sub(this.position);
+                if (diff.dot(diff) <= 1000) {
+                    success = false;
+                }
+                for (let enemy of enemies) {
+                    var diff = enemy.position.sub(this.position);
+                    if (diff.dot(diff) <= 1000) {
+                        success = false;
+                    }
+                }
+                if (success) {
+                    this.walkable = false;
+                    this.openBool = false;
+                    this.isClosingCountdown = false;
+                }
+            }
+        }
+        if (this.openBool && !this.isClosingCountdown) {
             this.openRange.addThis(this.velocity.mul(dt * 3));
-            if (this.openRange.x > 100) {
+            if (this.openRange.x >= 100) {
                 this.openRange.x = 100;
+                this.closeTimeCount = 0;
                 this.walkable = true;
+                this.isClosingCountdown = true;
+            } 
+            
+        }
+        if (!this.openBool) {
+            this.openRange.addThis(this.velocity.mul(dt * -3));
+            if (this.openRange.x <= 0) {
+                this.openRange.x = 0;
             }
         }
     }
@@ -49,14 +83,13 @@ class Door extends Tile {
     renderRaycaster(context, data) {
         var halfY = outputHeight / 2;
         var height = this.length / data.z * distToPlane;
-        var image = "tile49";
         var offset = parseInt(this.length * this.openRange.x / 100);
         context.drawImage(
             this.assets.spritesAtlas, 
-            parseInt(this.atlas.sprites[image].x) + parseInt(data.pixel) - offset,
-            this.atlas.sprites[image].y,
+            parseInt(this.atlas.sprites[this.image].x) + parseInt(data.pixel) - offset,
+            this.atlas.sprites[this.image].y,
             1,
-            this.atlas.sprites[image].height,
+            this.atlas.sprites[this.image].height,
             data.x,
             halfY - height / 2,
             pixelWidth,

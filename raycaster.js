@@ -52,6 +52,7 @@ class Raycaster {
             var minVector = null;
             var pixelWall = 0;
             var minWall = null;
+            var wallImageType = null;
             // Direction line
             var vector = new Vector(200, 0);
             vector.setAngle(radians);
@@ -85,6 +86,7 @@ class Raycaster {
                             minVector = vector;
                             minWall = wall;
                             pixelWall = vector.x % map.tileLength;
+                            wallImageType = ROW_TYPE_IMAGE;
                         }
                     }
                 }
@@ -115,13 +117,14 @@ class Raycaster {
                             minVector = vector;
                             minWall = wall;
                             pixelWall = vector.y % map.tileLength;
+                            wallImageType = COL_TYPE_IMAGE;
                         }
                     }
                 }
             }        
             if (minVector !== null) {
                 var z = this.getFixedZ(minVector, radians);
-                this.data.push({z: z, x: tmpX * pixelWidth, object: minWall, pixel:pixelWall});
+                this.data.push({z: z, x: tmpX * pixelWidth, object: minWall, pixel: pixelWall, imageType: wallImageType});
                 //context.fillStyle = "#00ff00";
                 //context.fillRect(origX + minVector.x, origY - minVector.y, 2, 2);
             }

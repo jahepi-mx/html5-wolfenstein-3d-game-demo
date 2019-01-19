@@ -1,3 +1,6 @@
+let COL_TYPE_IMAGE = 1;
+let ROW_TYPE_IMAGE = 2;
+
 class Tile {
     constructor(x, y, type, length, walkable) {
         this.length = length;
@@ -7,6 +10,8 @@ class Tile {
         this.type = type;
         this.atlas = Atlas.getInstance();
         this.assets = Assets.getInstance();
+        this.colImage = "tile21";
+        this.rowImage = "tile21";
     }
     
     update(dt) {
@@ -26,7 +31,7 @@ class Tile {
     renderRaycaster(context, data) {
         var halfY = outputHeight / 2;
         var height = this.length / data.z * distToPlane;
-        var image = "tile22";
+        var image = data.imageType === COL_TYPE_IMAGE ? this.colImage : this.rowImage;
         context.drawImage(
             this.assets.spritesAtlas, 
             parseInt(this.atlas.sprites[image].x) + parseInt(data.pixel),

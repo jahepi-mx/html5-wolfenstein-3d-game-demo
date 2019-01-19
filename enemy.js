@@ -9,7 +9,7 @@ class Enemy {
         this.directionVectorFrom = new Vector(1, 0);
         this.directionVectorTo = new Vector(0, 0);
         this.searchTime = 0;
-        this.searchTimeLimit = 3;
+        this.searchTimeLimit = 1;
         this.path = [];
         this.pathTo = null;
         this.bullets = [];
@@ -20,6 +20,7 @@ class Enemy {
     update(dt) {
         this.searchTime += dt;
         if (this.searchTime > this.searchTimeLimit) {
+            this.path = [];
             this.pathfinding();
             this.searchTime = 0;
         }
@@ -128,7 +129,7 @@ class Enemy {
                 this.path.push(map.tiles[index].position);
                 index = parents[index];
             }
-            this.path.push(map.tiles[index].position);
+            //this.path.push(map.tiles[index].position);
         }
     }
     
