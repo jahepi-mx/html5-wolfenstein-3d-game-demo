@@ -14,7 +14,7 @@ class Map {
             1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,
         ];
         
-        this.tileLength = 30;
+        this.tileLength = 32;
         this.width = 16;
         this.height = 6;
         this.tiles = [];

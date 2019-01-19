@@ -39,7 +39,7 @@ and open the template in the editor.
             var raycaster = null;
             var raycasterRender = null;
             var sprites = [];
-            var outputWidth = gameResWidth; //gameResWidth * 2;
+            var outputWidth = gameResWidth * 2;
             var pixelWidth = outputWidth / gameResWidth;
             var outputHeight = outputWidth / aspectRatio;
             var distToPlane = 0;
@@ -104,7 +104,7 @@ and open the template in the editor.
                 
                 var data = raycaster.getData();
                 raycasterRender.data = data;
-                raycasterRender.render(contextGame);
+                raycasterRender.render(contextGame, fps);
                 
                 //enemy.update(dt);
                 //enemy.render(context);

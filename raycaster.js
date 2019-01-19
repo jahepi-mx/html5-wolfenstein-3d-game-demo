@@ -37,6 +37,7 @@ class Raycaster {
         for (var a = 0; a < this.numberOfRays; a++) {
             var minRayLen = 1 << 30; // 30 bit number enough?
             var minVector = null;
+            var pixelWall = 0;
             // Direction line
             var vector = new Vector(200, 0);
             vector.setAngle(radians);
@@ -59,7 +60,7 @@ class Raycaster {
                     var door = this.collideDoor(newRayDoorVector, MAP_DOOR_ROW);
                     if (door !== null && door.isPixelVisible(newRayDoorVector)) {
                         var z = this.getFixedZ(newRayDoorVector, radians);
-                        this.data.push({z: z, x: tmpX * pixelWidth, sprite:null, door:true});
+                        this.data.push({z: z, x: tmpX * pixelWidth, sprite:null, door:true, obj:door, pixel:newRayDoorVector.x % map.tileLength});
                     }
                     // Check if ray point collide with a wall     
                     if (this.collideWall(vector)) {
@@ -67,6 +68,7 @@ class Raycaster {
                         if (diff.dot(diff) < minRayLen) {
                             minRayLen = diff.dot(diff);
                             minVector = vector;
+                            pixelWall = vector.x % map.tileLength;
                         }
                     }
                 }
@@ -86,7 +88,7 @@ class Raycaster {
                     var door = this.collideDoor(newRayDoorVector, MAP_DOOR_COL);
                     if (door !== null && door.isPixelVisible(newRayDoorVector)) {
                         var z = this.getFixedZ(newRayDoorVector, radians);
-                        this.data.push({z: z, x: tmpX * pixelWidth, sprite:null, door:true});
+                        this.data.push({z: z, x: tmpX * pixelWidth, sprite:null, door:true, obj:door, pixel:newRayDoorVector.y % map.tileLength});
                     }
                     // Check if ray point collide with a wall
                     if (this.collideWall(vector)) {
@@ -94,13 +96,14 @@ class Raycaster {
                         if (diff.dot(diff) < minRayLen) {
                             minRayLen = diff.dot(diff);
                             minVector = vector;
+                            pixelWall = vector.y % map.tileLength;
                         }
                     }
                 }
             }        
             if (minVector !== null) {
                 var z = this.getFixedZ(minVector, radians);
-                this.data.push({z: z, x: tmpX * pixelWidth, sprite:null, door:false});
+                this.data.push({z: z, x: tmpX * pixelWidth, sprite:null, door:false, pixel:pixelWall});
                 //context.fillStyle = "#00ff00";
                 //context.fillRect(origX + minVector.x, origY - minVector.y, 2, 2);
             }
