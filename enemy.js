@@ -162,6 +162,13 @@ class Enemy {
         for (let bullet of this.bullets) {
             bullet.render(context);
         }
-    } 
+    }
+    
+    renderRaycaster(context, data) {
+        var halfY = outputHeight / 2;
+        context.fillStyle = "#ffe8e8";
+        var len = this.length  / data.z * distToPlane;
+        context.fillRect(data.x - len / 2, halfY - len / 2, len, len);
+    }
 }
 

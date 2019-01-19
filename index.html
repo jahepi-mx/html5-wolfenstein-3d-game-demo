@@ -35,7 +35,7 @@ and open the template in the editor.
             var canvas, context, canvasGame, contextGame;
             var player = null;
             var map = null;
-            var enemy = null;
+            var enemies = [];
             var raycaster = null;
             var raycasterRender = null;
             var sprites = [];
@@ -57,13 +57,13 @@ and open the template in the editor.
                 var playerX = map.tileLength * 1 + map.tileLength / 2;
                 var playerY = map.tileLength * 1 + map.tileLength / 2; 
                 player = new Player(playerX, playerY, 10);
-                sprites.push(new Sprite(map.tileLength * 3 + map.tileLength / 2, map.tileLength * 4, 10));
+                sprites.push(new Sprite(map.tileLength * 3 + map.tileLength / 2, map.tileLength * 4, 30));
                 sprites.push(new Sprite(map.tileLength * 8 + map.tileLength / 2, map.tileLength * 3, 10));
                 raycaster = new Raycaster(gameResWidth);
                 raycasterRender = new RaycasterRender();
                 distToPlane = (outputWidth / 2) / Math.tan(raycaster.fov / 2);
-                enemy = new Enemy(6, 4);
-                sprites.push(enemy);
+                var enemy = new Enemy(6, 4);
+                enemies.push(enemy);
                 var assets = Assets.getInstance();
                 assets.loadAll(onLoadAssets, onDownloadAssets);
             };
@@ -99,6 +99,10 @@ and open the template in the editor.
                     sprite.update(dt);
                     sprite.render(context);
                 }
+                for (let enemy of enemies) {
+                    enemy.update(dt);
+                    enemy.render(context);
+                }
                 player.update(dt);
                 player.render(context);
                 
@@ -106,8 +110,6 @@ and open the template in the editor.
                 raycasterRender.data = data;
                 raycasterRender.render(contextGame, fps);
                 
-                //enemy.update(dt);
-                //enemy.render(context);
                 requestAnimationFrame(update);
             }
             
