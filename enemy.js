@@ -15,6 +15,8 @@ class Enemy {
         this.bullets = [];
         this.shootTime = 0;
         this.shootTimeLimit = 1;
+        this.atlas = Atlas.getInstance();
+        this.assets = Assets.getInstance();
     }
     
     update(dt) {
@@ -166,10 +168,23 @@ class Enemy {
     }
     
     renderRaycaster(context, data) {
-        var halfY = outputHeight / 2;
+        /*var halfY = outputHeight / 2;
         context.fillStyle = "#ffe8e8";
         var len = this.length  / data.z * distToPlane;
-        context.fillRect(data.x - len / 2, halfY - len / 2, len, len);
+        context.fillRect(data.x - len / 2, halfY - len / 2, len, len);*/
+        var halfY = outputHeight / 2;
+        var length = 32;
+        var height = length / data.z * distToPlane;
+        context.drawImage(
+            this.assets.spritesAtlas, 
+            this.atlas.sprites["SS_01"].x,
+            this.atlas.sprites["SS_01"].y,
+            this.atlas.sprites["SS_01"].width,
+            this.atlas.sprites["SS_01"].height,
+            data.x - height / 2,
+            halfY - height / 2,
+            height,
+            height);
     }
 }
 

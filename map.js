@@ -38,10 +38,10 @@ class Map {
                     this.walls[newY * this.width + x] = tile;
                 }
                 if (value === MAP_WALL_DOOR_COL) {
-                    tile.rowImage = "tile27";
+                    tile.rowImage = "tile21";
                 }
                 if (value === MAP_WALL_DOOR_ROW) {
-                    tile.colImage = "tile27";
+                    tile.colImage = "tile21";
                 }
             }
             if (value === MAP_DOOR_ROW || value === MAP_DOOR_COL) {

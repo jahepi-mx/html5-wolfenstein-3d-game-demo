@@ -3,7 +3,7 @@ class Bullet {
     constructor(position, direction) {
         this.moves = [[0, 0], [1, 0], [1, 1], [0, 1], [-1, 1], [-1, 0], [-1, -1], [0, -1], [1, -1]];
         this.position = position;
-        this.velocity = direction.mul(30);
+        this.velocity = direction.mul(60);
         this.length = 2;
         this.collided = false;
     }
