@@ -90,7 +90,7 @@ class Enemy {
             }
         }
         
-        if (this.velocity.x > 0 || this.velocity.y > 0) {
+        if (this.velocity.x !== 0 || this.velocity.y !== 0) {
             this.runAnimation.update(dt);
         }
         if (this.fireAnimation !== null) {
@@ -230,7 +230,7 @@ class Enemy {
         var angle = this.getSpriteAngle();
         if (this.fireAnimation !== null && !this.fireAnimation.isStopped()) {
             image = "SS_FIRE_" + (this.fireAnimation.getFrame() + 1);
-        } else if (this.velocity.x != 0 || this.velocity.y != 0) {
+        } else if (this.velocity.x !== 0 || this.velocity.y !== 0) {
             image = "SS_RUN_" + angle + "_" + (this.runAnimation.getFrame() + 1);
         } else {
             image += "SS_" + angle;
