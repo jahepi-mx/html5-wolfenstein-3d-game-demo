@@ -1,7 +1,7 @@
 class Enemy {
     
     constructor(x, y) {
-        this.length = 10;
+        this.length = 25;
         this.moves = [[-1, 0], [0, -1], [1, 0], [0, 1]];
         this.position = new Vector(map.tileLength * x + map.tileLength / 2, map.tileLength * y + map.tileLength / 2);
         this.velocity = new Vector(0, 0);
@@ -17,6 +17,8 @@ class Enemy {
         this.shootTimeLimit = 1;
         this.atlas = Atlas.getInstance();
         this.assets = Assets.getInstance();
+        this.runAnimation = new Animation(4, 2);
+        this.fireAnimation = null;
     }
     
     update(dt) {
@@ -37,6 +39,8 @@ class Enemy {
             if (this.shootTime >= this.shootTimeLimit) {
                 this.bullets.push(new Bullet(this.position.clone(), new Vector(1, 0).setUnitAngle(this.directionVectorFrom.getAngle())));
                 this.shootTime = 0;
+                this.fireAnimation = new Animation(4, 1);
+                this.fireAnimation.stopAtSequenceNumber(1, null);
             }
         } else {
             this.shootTime = 0;
@@ -84,6 +88,13 @@ class Enemy {
             if (bullet.collided) {
                 this.bullets.splice(a, 1);
             }
+        }
+        
+        if (this.velocity.x > 0 || this.velocity.y > 0) {
+            this.runAnimation.update(dt);
+        }
+        if (this.fireAnimation !== null) {
+            this.fireAnimation.update(dt);
         }
     }
     
@@ -167,29 +178,47 @@ class Enemy {
         }
     }
     
-    calculateSpriteDirection() {
+    getSpriteAngle() {
+        /*
+         To see in which angle is the enemy sprite related to the player view direction,
+         We took first the direction where the player is pointing out (directionVectorFrom), this is the vector which is the viewing direction.
+         It is our X basis vector, and the Y basis vector can be derived from the following matrix:
+           x     y
+          [cos, -sin
+           sin, cos]
+        
+        We transpose the matrix to transform from World Coordinates to Local coordinates in relation to the basis vectors: 
+            x     y
+          [cos,  sin
+           -sin, cos]
+         
+        Convert the world coordinates to local:
+        x = x * cos + y * sin;
+        y = x * -sin + y * cos;
+        
+        Finally get the angle from the obtained vector to know in which angle the sprite should be rendered.
+         */
         var rad = player.rotation;
         var cos = Math.cos(rad);
         var sin = Math.sin(rad);
-        
-        // From world to local space
         var localX = this.directionVectorFrom.x * cos + this.directionVectorFrom.y * sin;
         var localY = this.directionVectorFrom.x * -sin + this.directionVectorFrom.y * cos;
         
         var newRad = Math.atan2(localY, localX);
-        if (newRad < 0) newRad += Math.PI * 2;
+        if (newRad < 0) {
+            newRad += Math.PI * 2;
+        }
         var degrees = 180 / Math.PI * newRad;
- 
-        var image = "SS_0";
-        if (degrees >= 337.5 || degrees < 22.5) image = "SS_0";
-        if (degrees >= 22.5 && degrees < 67.5) image = "SS_45";
-        if (degrees >= 67.5 && degrees < 112.5) image = "SS_90";
-        if (degrees >= 112.5 && degrees < 157.5) image = "SS_135";
-        if (degrees >= 157.5 && degrees < 202.5) image = "SS_180";
-        if (degrees >= 202.5 && degrees < 247.5) image = "SS_225";
-        if (degrees >= 247.5 && degrees < 292.5) image = "SS_270";
-        if (degrees >= 292.5 && degrees < 337.5) image = "SS_315";
-        return image;
+        
+        if (degrees >= 338 || degrees < 23) return 0;
+        if (degrees >= 23 && degrees < 68) return 45;
+        if (degrees >= 68 && degrees < 113) return 90;
+        if (degrees >= 113 && degrees < 158) return 135;
+        if (degrees >= 158 && degrees < 203) return 180;
+        if (degrees >= 203 && degrees < 248) return 225;
+        if (degrees >= 248 && degrees < 293) return 270;
+        if (degrees >= 293 && degrees < 338) return 315;
+        return 0;
     }
     
     renderRaycaster(context, data) {
@@ -197,11 +226,19 @@ class Enemy {
         context.fillStyle = "#ffe8e8";
         var len = this.length  / data.z * distToPlane;
         context.fillRect(data.x - len / 2, halfY - len / 2, len, len);*/
+        var image = "";
+        var angle = this.getSpriteAngle();
+        if (this.fireAnimation !== null && !this.fireAnimation.isStopped()) {
+            image = "SS_FIRE_" + (this.fireAnimation.getFrame() + 1);
+        } else if (this.velocity.x > 0 || this.velocity.y > 0) {
+            image = "SS_RUN_" + angle + "_" + (this.runAnimation.getFrame() + 1);
+        } else {
+            image += "SS_" + angle;
+        }
         
         var halfY = outputHeight / 2;
-        var length = 32;
+        var length = map.tileLength;
         var height = length / data.z * distToPlane;
-        var image = this.calculateSpriteDirection();
         context.drawImage(
             this.assets.spritesAtlas, 
             this.atlas.sprites[image].x,

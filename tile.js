@@ -42,6 +42,10 @@ class Tile {
             halfY - height / 2,
             pixelWidth,
             height);
+        // Fog
+        var ratio = data.z / 1000;
+        context.fillStyle = "rgba(225,225,225," + ratio + ")";
+        context.fillRect(data.x, halfY - height / 2, pixelWidth, height);
     }
 }
 
