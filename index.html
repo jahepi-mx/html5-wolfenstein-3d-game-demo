@@ -62,7 +62,7 @@ and open the template in the editor.
                 raycaster = new Raycaster(gameResWidth);
                 raycasterRender = new RaycasterRender();
                 distToPlane = (outputWidth / 2) / Math.tan(raycaster.fov / 2);
-                var enemy = new Enemy(6, 4);
+                var enemy = new Enemy(8, 5);
                 enemies.push(enemy);
                 var assets = Assets.getInstance();
                 assets.loadAll(onLoadAssets, onDownloadAssets);

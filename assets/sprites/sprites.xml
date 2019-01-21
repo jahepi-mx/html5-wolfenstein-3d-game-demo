@@ -1,10 +1,18 @@
 <TextureAtlas imagePath="sprites.png">
-	<SubTexture name="SS_01.png" x="0" y="0" width="64" height="64"/>
-	<SubTexture name="door.png" x="34" y="66" width="32" height="32"/>
-	<SubTexture name="tile21.png" x="0" y="168" width="32" height="32"/>
-	<SubTexture name="tile22.png" x="0" y="202" width="32" height="32"/>
-	<SubTexture name="torch1.png" x="34" y="100" width="32" height="32"/>
-	<SubTexture name="torch2.png" x="0" y="100" width="32" height="32"/>
-	<SubTexture name="torch3.png" x="0" y="134" width="32" height="32"/>
-	<SubTexture name="torch4.png" x="0" y="66" width="32" height="32"/>
+	<SubTexture name="SS_0.png" x="0" y="132" width="64" height="64"/>
+	<SubTexture name="SS_01.png" x="66" y="0" width="64" height="64"/>
+	<SubTexture name="SS_135.png" x="132" y="66" width="64" height="64"/>
+	<SubTexture name="SS_180.png" x="66" y="0" width="64" height="64"/>
+	<SubTexture name="SS_225.png" x="132" y="0" width="64" height="64"/>
+	<SubTexture name="SS_270.png" x="0" y="0" width="64" height="64"/>
+	<SubTexture name="SS_315.png" x="66" y="66" width="64" height="64"/>
+	<SubTexture name="SS_45.png" x="0" y="66" width="64" height="64"/>
+	<SubTexture name="SS_90.png" x="66" y="132" width="64" height="64"/>
+	<SubTexture name="door.png" x="136" y="200" width="32" height="32"/>
+	<SubTexture name="tile21.png" x="0" y="198" width="32" height="32"/>
+	<SubTexture name="tile22.png" x="34" y="198" width="32" height="32"/>
+	<SubTexture name="torch1.png" x="68" y="198" width="32" height="32"/>
+	<SubTexture name="torch2.png" x="102" y="198" width="32" height="32"/>
+	<SubTexture name="torch3.png" x="132" y="132" width="32" height="32"/>
+	<SubTexture name="torch4.png" x="136" y="166" width="32" height="32"/>
 </TextureAtlas>

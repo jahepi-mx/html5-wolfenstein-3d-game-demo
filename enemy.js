@@ -167,20 +167,47 @@ class Enemy {
         }
     }
     
+    calculateSpriteDirection() {
+        var rad = player.rotation;
+        var cos = Math.cos(rad);
+        var sin = Math.sin(rad);
+        
+        // From world to local space
+        var localX = this.directionVectorFrom.x * cos + this.directionVectorFrom.y * sin;
+        var localY = this.directionVectorFrom.x * -sin + this.directionVectorFrom.y * cos;
+        
+        var newRad = Math.atan2(localY, localX);
+        if (newRad < 0) newRad += Math.PI * 2;
+        var degrees = 180 / Math.PI * newRad;
+ 
+        var image = "SS_0";
+        if (degrees >= 337.5 || degrees < 22.5) image = "SS_0";
+        if (degrees >= 22.5 && degrees < 67.5) image = "SS_45";
+        if (degrees >= 67.5 && degrees < 112.5) image = "SS_90";
+        if (degrees >= 112.5 && degrees < 157.5) image = "SS_135";
+        if (degrees >= 157.5 && degrees < 202.5) image = "SS_180";
+        if (degrees >= 202.5 && degrees < 247.5) image = "SS_225";
+        if (degrees >= 247.5 && degrees < 292.5) image = "SS_270";
+        if (degrees >= 292.5 && degrees < 337.5) image = "SS_315";
+        return image;
+    }
+    
     renderRaycaster(context, data) {
         /*var halfY = outputHeight / 2;
         context.fillStyle = "#ffe8e8";
         var len = this.length  / data.z * distToPlane;
         context.fillRect(data.x - len / 2, halfY - len / 2, len, len);*/
+        
         var halfY = outputHeight / 2;
         var length = 32;
         var height = length / data.z * distToPlane;
+        var image = this.calculateSpriteDirection();
         context.drawImage(
             this.assets.spritesAtlas, 
-            this.atlas.sprites["SS_01"].x,
-            this.atlas.sprites["SS_01"].y,
-            this.atlas.sprites["SS_01"].width,
-            this.atlas.sprites["SS_01"].height,
+            this.atlas.sprites[image].x,
+            this.atlas.sprites[image].y,
+            this.atlas.sprites[image].width,
+            this.atlas.sprites[image].height,
             data.x - height / 2,
             halfY - height / 2,
             height,
