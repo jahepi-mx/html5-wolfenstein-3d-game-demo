@@ -1,15 +1,15 @@
 class Enemy {
     
-    constructor(x, y) {
+    constructor(x, y, velocity) {
         this.length = 25;
         this.moves = [[-1, 0], [0, -1], [1, 0], [0, 1]];
         this.position = new Vector(map.tileLength * x + map.tileLength / 2, map.tileLength * y + map.tileLength / 2);
         this.velocity = new Vector(0, 0);
-        this.velocityTmp = new Vector(20, 20);
+        this.velocityTmp = new Vector(velocity, velocity);
         this.directionVectorFrom = new Vector(1, 0);
         this.directionVectorTo = new Vector(0, 0);
         this.searchTime = 0;
-        this.searchTimeLimit = 1;
+        this.searchTimeLimit = 2;
         this.path = [];
         this.pathTo = null;
         this.bullets = [];
