@@ -45,6 +45,61 @@ class Raycaster {
         }
     }
     
+    calculateMovingWalls(cos, sin, radians, tmpX) {
+        var half = map.tileLength / 2;
+        var vector = new Vector(0, 0);
+        var rayVector = new Vector(cos, sin);
+        for (let movingWall of map.movingWalls) {
+            var sub = movingWall.position.sub(player.position);
+            if (sub.dot(rayVector) > 0) {
+                // Check top
+                var newY = (movingWall.position.y + half) - player.position.y;
+                var hyp = newY / sin;
+                vector.x = cos * hyp;
+                vector.y = newY;
+                vector.addThis(player.position);
+                if (Math.abs(movingWall.position.x - vector.x) <= half && Math.abs(movingWall.position.y - vector.y) <= half) {
+                    var z = this.getFixedZ(vector, radians);
+                    var pixelWall = vector.x - (movingWall.position.x - half); 
+                    this.data.push({z: z, x: tmpX * pixelWidth, object: movingWall, pixel: pixelWall, imageType: ROW_TYPE_IMAGE});
+                }
+                // Check bottom
+                var newY = (movingWall.position.y - half) - player.position.y;
+                var hyp = newY / sin;
+                vector.x = cos * hyp;
+                vector.y = newY;
+                vector.addThis(player.position);
+                if (Math.abs(movingWall.position.x - vector.x) <= half && Math.abs(movingWall.position.y - vector.y) <= half) {
+                    var z = this.getFixedZ(vector, radians);
+                    var pixelWall = vector.x - (movingWall.position.x - half); 
+                    this.data.push({z: z, x: tmpX * pixelWidth, object: movingWall, pixel: pixelWall, imageType: ROW_TYPE_IMAGE});
+                }
+                // Check left
+                var newX = (movingWall.position.x - half) - player.position.x;
+                var hyp = newX / cos;
+                vector.x = newX;
+                vector.y = sin * hyp;
+                vector.addThis(player.position);
+                if (Math.abs(movingWall.position.x - vector.x) <= half && Math.abs(movingWall.position.y - vector.y) <= half) {
+                    var z = this.getFixedZ(vector, radians);
+                    var pixelWall = vector.y - (movingWall.position.y - half); 
+                    this.data.push({z: z, x: tmpX * pixelWidth, object: movingWall, pixel: pixelWall, imageType: COL_TYPE_IMAGE});
+                }
+                // Check right
+                var newX = (movingWall.position.x + half) - player.position.x;
+                var hyp = newX / cos;
+                vector.x = newX;
+                vector.y = sin * hyp;
+                vector.addThis(player.position);
+                if (Math.abs(movingWall.position.x - vector.x) <= half && Math.abs(movingWall.position.y - vector.y) <= half) {
+                    var z = this.getFixedZ(vector, radians);
+                    var pixelWall = vector.y - (movingWall.position.y - half); 
+                    this.data.push({z: z, x: tmpX * pixelWidth, object: movingWall, pixel: pixelWall, imageType: COL_TYPE_IMAGE});
+                }
+            }
+        }
+    }
+    
     wallsAndDoors() {
         var tmpX = 0;
         var radians = player.rotation + this.fov / 2;
@@ -55,13 +110,16 @@ class Raycaster {
             var minWall = null;
             var wallImageType = null;
             // Direction line
-            var vector = new Vector(200, 0);
-            vector.setAngle(radians);
-            var rayVector = vector.clone();
+            // var vector = new Vector(200, 0);
+            // vector.setAngle(radians);
+            // var rayVector = vector.clone();
             // Calculate ray collision on rows
             var cos = Math.cos(radians);
             var sin = Math.sin(radians);
+            // Direction line
+            var rayVector = new Vector(cos, sin);
             var doorVector = new Vector(cos, sin).mul(map.tileLength / 2);
+            this.calculateMovingWalls(cos, sin, radians, tmpX);
             for (var y = 0; y <= map.height; y++) {
                 var newY = map.tileLength * y - player.position.y;
                 var hyp = newY / sin;

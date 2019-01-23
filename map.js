@@ -5,13 +5,14 @@ let MAP_DOOR_ROW = 3;
 let MAP_WALL_DOOR_COL = 4;
 let MAP_WALL_DOOR_ROW = 5;
 let MAP_SPRITE = 6;
+let MAP_MOVING_WALL = 7;
 
 class Map {
     constructor() {
         var map = [
             1,1,1,1,1,4,1,1,1,1,1,1,1,1,1,1,
             1,0,0,0,0,2,0,0,0,0,0,0,0,0,0,1,
-            1,0,0,0,0,4,0,0,0,0,0,0,0,0,0,1,
+            1,0,0,0,0,4,0,0,7,0,0,0,0,0,0,1,
             1,0,6,0,0,1,0,0,0,0,1,5,3,5,1,1,
             1,0,0,0,0,0,0,0,1,0,4,0,0,0,0,1,
             1,0,0,0,0,0,0,0,0,0,2,0,0,0,0,1,
@@ -24,6 +25,7 @@ class Map {
         this.height = 8;
         this.tiles = [];
         this.walls = [];
+        this.movingWalls = [];
         this.doors = [];
         this.sprites = [];
         for (var a = 0; a < this.width * this.height; a++) {
@@ -53,6 +55,11 @@ class Map {
             if (value === MAP_SPRITE) {
                 tile = new Sprite(x, newY, value, this.tileLength, false);
                 this.sprites.push(tile);
+            }
+            
+            if (value === MAP_MOVING_WALL) {
+                tile = new MovingWall(x, newY, value, this.tileLength);
+                this.movingWalls.push(tile);
             }
             
             this.tiles[newY * this.width + x] = tile;
