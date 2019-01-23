@@ -27,13 +27,13 @@ class RaycasterRender {
         if (player.isShooting && this.fireAnimation.isStopped()) {
             this.fireAnimation.reset();
         }
-        if (this.fireAnimation !== null && !this.fireAnimation.isStopped()) {
+        if (!this.fireAnimation.isStopped()) {
             this.fireAnimation.update(dt);
         }
         
         var frame = "gun";
         
-        if (this.fireAnimation !== null && !this.fireAnimation.isStopped()) {
+        if (!this.fireAnimation.isStopped()) {
             frame = "gun_shot_" + (this.fireAnimation.getFrame() + 1);
         }
         var len = outputWidth * 0.6;
