@@ -38,7 +38,7 @@ and open the template in the editor.
             var enemies = [];
             var raycaster = null;
             var raycasterRender = null;
-            var outputWidth = gameResWidth * 2;
+            var outputWidth = gameResWidth * 3;
             var pixelWidth = outputWidth / gameResWidth;
             var outputHeight = outputWidth / aspectRatio;
             var distToPlane = 0;
@@ -94,22 +94,22 @@ and open the template in the editor.
                 context.fillText(fps, previewWidth - 10, 10);
                 for (let tile of map.tiles) {
                     tile.update(dt);
-                    tile.render(context);
+                    //tile.render(context);
                 }
                 for (let sprite of map.sprites) {
                     sprite.update(dt);
-                    sprite.render(context);
+                    //sprite.render(context);
                 }
                 for (let enemy of enemies) {
                     enemy.update(dt);
-                    enemy.render(context);
+                    //enemy.render(context);
                 }
                 player.update(dt);
-                player.render(context);
+                //player.render(context);
                 
                 var data = raycaster.getData();
                 raycasterRender.data = data;
-                raycasterRender.render(contextGame, fps);
+                raycasterRender.render(contextGame, dt, fps);
                 
                 requestAnimationFrame(update);
             }
@@ -135,6 +135,6 @@ and open the template in the editor.
     </head>
     <body style="background-color: #000">
         <div style="text-align: center; margin: 0 auto; border: 2px solid red; width: 960px"><canvas id="game"></canvas></div>
-        <canvas style="display: visible" id="canvas"></canvas>
+        <canvas style="display: none" id="canvas"></canvas>
     </body>
 </html>

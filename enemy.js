@@ -20,7 +20,9 @@ class Enemy {
         this.runAnimation = new Animation(4, 2);
         this.deadAnimation = new Animation(5, 1);
         this.deadAnimation.stopAtSequenceNumber(1, null);
-        this.fireAnimation = null;
+        this.fireAnimation = new Animation(2, 2);
+        this.fireAnimation.stopAtSequenceNumber(3, null);
+        this.fireAnimation.stop();
         this.life = 3;
         this.isDead = false;
         this.dispose = false;
@@ -51,14 +53,11 @@ class Enemy {
             if (this.shootTime >= this.shootTimeLimit) {
                 this.bullets.push(new Bullet(this.position.clone(), new Vector(1, 0).setUnitAngle(this.directionVectorFrom.getAngle())));
                 this.shootTime = 0;
-                this.fireAnimation = new Animation(2, 2);
-                this.fireAnimation.stopAtSequenceNumber(3, null);
+                this.fireAnimation.reset();
             }
         } else {
             this.shootTime = 0;
-            if (this.fireAnimation !== null) {
-                this.fireAnimation.stop();
-            }
+            this.fireAnimation.stop();
         }
         
         this.calculateDirection(dt);
@@ -108,7 +107,7 @@ class Enemy {
         if (this.velocity.x !== 0 || this.velocity.y !== 0) {
             this.runAnimation.update(dt);
         }
-        if (this.fireAnimation !== null) {
+        if (!this.fireAnimation.isStopped()) {
             this.fireAnimation.update(dt);
         }
     }
@@ -253,7 +252,7 @@ class Enemy {
         var angle = this.getSpriteAngle();
         if (this.isDead) {
             image = "SS_DEAD_" + (this.deadAnimation.getFrame() + 1);
-        } else if (this.fireAnimation !== null && !this.fireAnimation.isStopped()) {
+        } else if (!this.fireAnimation.isStopped()) {
             image = "SS_FIRE_" + (this.fireAnimation.getFrame() + 1);
         } else if (this.velocity.x !== 0 || this.velocity.y !== 0) {
             image = "SS_RUN_" + angle + "_" + (this.runAnimation.getFrame() + 1);

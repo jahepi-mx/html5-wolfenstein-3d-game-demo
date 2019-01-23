@@ -15,18 +15,20 @@ class Player {
         this.openDoorBool = false;
         this.shootBool = false;
         this.shootTime = 0;
-        this.shootTimeLimit = 1;
+        this.shootTimeLimit = 0.3;
         this.bullets = [];
         this.playerDirection = new Vector(0, 0);
         this.viewDirection = new Vector(0, 0);
+        this.isShooting = false;
     }
     
     update(dt) {
-        
+        this.isShooting = false;
         this.shootTime += dt;
         if (this.shootTime >= this.shootTimeLimit && this.shootBool) {
             this.bullets.push(new Bullet(this.position.clone(), new Vector(1, 0).setUnitAngle(this.rotation)));
             this.shootTime = 0;
+            this.isShooting = true;
         }
             
         if (this.rotateLeftBool) {
@@ -123,11 +125,13 @@ class Player {
                 this.bullets.splice(a, 1);
             } else {
                 for (let enemy of enemies) {
-                    var diff = enemy.position.sub(bullet.position);
-                    var size = enemy.length / 2 + bullet.length / 2;
-                    if (!bullet.collided && Math.abs(diff.x) <= size && Math.abs(diff.y) <= size) {
-                        bullet.collided = true;
-                        enemy.damage();
+                    if (!enemy.isDead) {
+                        var diff = enemy.position.sub(bullet.position);
+                        var size = enemy.length / 2 + bullet.length / 2;
+                        if (!bullet.collided && Math.abs(diff.x) <= size && Math.abs(diff.y) <= size) {
+                            bullet.collided = true;
+                            enemy.damage();
+                        }
                     }
                 }
             }
