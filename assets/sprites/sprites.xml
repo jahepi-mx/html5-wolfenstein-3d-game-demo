@@ -1,22 +1,22 @@
 <TextureAtlas imagePath="sprites.png">
-	<SubTexture name="SS_0.png" x="0" y="264" width="64" height="64"/>
-	<SubTexture name="SS_01.png" x="0" y="132" width="64" height="64"/>
-	<SubTexture name="SS_135.png" x="0" y="330" width="64" height="64"/>
-	<SubTexture name="SS_180.png" x="0" y="132" width="64" height="64"/>
-	<SubTexture name="SS_225.png" x="198" y="396" width="64" height="64"/>
-	<SubTexture name="SS_270.png" x="396" y="396" width="64" height="64"/>
+	<SubTexture name="SS_0.png" x="0" y="198" width="64" height="64"/>
+	<SubTexture name="SS_01.png" x="0" y="264" width="64" height="64"/>
+	<SubTexture name="SS_135.png" x="198" y="396" width="64" height="64"/>
+	<SubTexture name="SS_180.png" x="0" y="264" width="64" height="64"/>
+	<SubTexture name="SS_225.png" x="396" y="198" width="64" height="64"/>
+	<SubTexture name="SS_270.png" x="396" y="132" width="64" height="64"/>
 	<SubTexture name="SS_315.png" x="396" y="330" width="64" height="64"/>
-	<SubTexture name="SS_45.png" x="0" y="198" width="64" height="64"/>
+	<SubTexture name="SS_45.png" x="0" y="330" width="64" height="64"/>
 	<SubTexture name="SS_90.png" x="264" y="0" width="64" height="64"/>
 	<SubTexture name="SS_DEAD_1.png" x="396" y="264" width="64" height="64"/>
-	<SubTexture name="SS_DEAD_2.png" x="396" y="198" width="64" height="64"/>
-	<SubTexture name="SS_DEAD_3.png" x="396" y="132" width="64" height="64"/>
+	<SubTexture name="SS_DEAD_2.png" x="330" y="330" width="64" height="64"/>
+	<SubTexture name="SS_DEAD_3.png" x="396" y="396" width="64" height="64"/>
 	<SubTexture name="SS_DEAD_4.png" x="396" y="66" width="64" height="64"/>
 	<SubTexture name="SS_DEAD_5.png" x="396" y="0" width="64" height="64"/>
 	<SubTexture name="SS_FIRE_1.png" x="330" y="396" width="64" height="64"/>
-	<SubTexture name="SS_FIRE_2.png" x="330" y="330" width="64" height="64"/>
-	<SubTexture name="SS_FIRE_3.png" x="330" y="264" width="64" height="64"/>
-	<SubTexture name="SS_FIRE_4.png" x="330" y="198" width="64" height="64"/>
+	<SubTexture name="SS_FIRE_2.png" x="330" y="264" width="64" height="64"/>
+	<SubTexture name="SS_HIT_1.png" x="264" y="66" width="64" height="64"/>
+	<SubTexture name="SS_HIT_2.png" x="330" y="198" width="64" height="64"/>
 	<SubTexture name="SS_RUN_0_1.png" x="330" y="132" width="64" height="64"/>
 	<SubTexture name="SS_RUN_0_2.png" x="330" y="66" width="64" height="64"/>
 	<SubTexture name="SS_RUN_0_3.png" x="330" y="0" width="64" height="64"/>
@@ -45,15 +45,18 @@
 	<SubTexture name="SS_RUN_45_2.png" x="264" y="264" width="64" height="64"/>
 	<SubTexture name="SS_RUN_45_3.png" x="264" y="198" width="64" height="64"/>
 	<SubTexture name="SS_RUN_45_4.png" x="264" y="132" width="64" height="64"/>
-	<SubTexture name="SS_RUN_90_1.png" x="264" y="66" width="64" height="64"/>
-	<SubTexture name="SS_RUN_90_2.png" x="0" y="66" width="64" height="64"/>
-	<SubTexture name="SS_RUN_90_3.png" x="0" y="0" width="64" height="64"/>
+	<SubTexture name="SS_RUN_90_1.png" x="0" y="0" width="64" height="64"/>
+	<SubTexture name="SS_RUN_90_2.png" x="0" y="132" width="64" height="64"/>
+	<SubTexture name="SS_RUN_90_3.png" x="0" y="66" width="64" height="64"/>
 	<SubTexture name="SS_RUN_90_4.png" x="198" y="330" width="64" height="64"/>
-	<SubTexture name="door.png" x="136" y="462" width="32" height="32"/>
-	<SubTexture name="tile21.png" x="0" y="462" width="32" height="32"/>
+	<SubTexture name="door.png" x="204" y="462" width="32" height="32"/>
+	<SubTexture name="new_bullet.png" x="0" y="496" width="4" height="4"/>
+	<SubTexture name="new_bullet_explo_1.png" x="272" y="462" width="32" height="32"/>
+	<SubTexture name="new_bullet_explo_2.png" x="238" y="462" width="32" height="32"/>
+	<SubTexture name="tile21.png" x="34" y="462" width="32" height="32"/>
 	<SubTexture name="tile22.png" x="68" y="462" width="32" height="32"/>
 	<SubTexture name="torch1.png" x="102" y="462" width="32" height="32"/>
-	<SubTexture name="torch2.png" x="34" y="462" width="32" height="32"/>
+	<SubTexture name="torch2.png" x="136" y="462" width="32" height="32"/>
 	<SubTexture name="torch3.png" x="170" y="462" width="32" height="32"/>
-	<SubTexture name="torch4.png" x="204" y="462" width="32" height="32"/>
+	<SubTexture name="torch4.png" x="0" y="462" width="32" height="32"/>
 </TextureAtlas>

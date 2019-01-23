@@ -3,12 +3,27 @@ class Bullet {
     constructor(position, direction) {
         this.moves = [[0, 0], [1, 0], [1, 1], [0, 1], [-1, 1], [-1, 0], [-1, -1], [0, -1], [1, -1]];
         this.position = position;
-        this.velocity = direction.mul(60);
-        this.length = 2;
+        this.position.addThis(direction.mul(map.tileLength / 2));
+        this.velocity = direction.mul(240);
+        this.length = 10;
         this.collided = false;
+        this.dispose = false;
+        this.atlas = Atlas.getInstance();
+        this.assets = Assets.getInstance();
+        this.fireExplosionAnimation = new Animation(2, 5);
+        this.fireExplosionAnimation.stopAtSequenceNumber(1, null);
     }
     
     update(dt) {
+        
+        if (this.collided) {
+            this.fireExplosionAnimation.update(dt);
+            if (this.fireExplosionAnimation.isStopped()) {
+                this.dispose = true;
+            }
+            return;
+        }
+        
         var x = parseInt(this.position.x / map.tileLength);
         var y = parseInt(this.position.y / map.tileLength);
         for (let move of this.moves) {
@@ -35,9 +50,30 @@ class Bullet {
     }
     
     renderRaycaster(context, data) {
-        var halfY = outputHeight / 2;
+        /*var halfY = outputHeight / 2;
         context.fillStyle = "#ffe8e8";
         var len = this.length / data.z * distToPlane;
         context.fillRect(data.x - len / 2, halfY - len / 2, len, len);
+        */
+        var halfY = outputHeight / 2;
+        var frame = "new_bullet";
+        var len = 0;
+        if (this.collided) {
+            len = this.length * 3 / data.z * distToPlane;
+            frame = "new_bullet_explo_" + (this.fireExplosionAnimation.getFrame() + 1);
+        } else {
+            len = this.length / data.z * distToPlane;
+        }
+        
+        context.drawImage(
+            this.assets.spritesAtlas, 
+            this.atlas.sprites[frame].x,
+            this.atlas.sprites[frame].y,
+            this.atlas.sprites[frame].width,
+            this.atlas.sprites[frame].height,
+            data.x - len / 2,
+            halfY - len / 2,
+            len,
+            len);
     }
 }

@@ -18,10 +18,22 @@ class Enemy {
         this.atlas = Atlas.getInstance();
         this.assets = Assets.getInstance();
         this.runAnimation = new Animation(4, 2);
+        this.deadAnimation = new Animation(5, 1);
+        this.deadAnimation.stopAtSequenceNumber(1, null);
         this.fireAnimation = null;
+        this.life = 3;
+        this.isDead = false;
+        this.dispose = false;
     }
     
     update(dt) {
+        
+        if (this.isDead) {
+            this.deadAnimation.update(dt);
+            this.bullets = [];
+            return;
+        }
+        
         this.searchTime += dt;
         if (this.searchTime > this.searchTimeLimit) {
             this.path = [];
@@ -30,7 +42,7 @@ class Enemy {
         }
         
         var playerVector = player.position.sub(this.position);
-        if (playerVector.dot(playerVector) <= 1000) {
+        if (playerVector.dot(playerVector) <= 4000) {
             this.path = [];
             this.pathTo = null;
             this.velocity.mulThis(0);
@@ -39,11 +51,14 @@ class Enemy {
             if (this.shootTime >= this.shootTimeLimit) {
                 this.bullets.push(new Bullet(this.position.clone(), new Vector(1, 0).setUnitAngle(this.directionVectorFrom.getAngle())));
                 this.shootTime = 0;
-                this.fireAnimation = new Animation(4, 1);
-                this.fireAnimation.stopAtSequenceNumber(1, null);
+                this.fireAnimation = new Animation(2, 2);
+                this.fireAnimation.stopAtSequenceNumber(3, null);
             }
         } else {
             this.shootTime = 0;
+            if (this.fireAnimation !== null) {
+                this.fireAnimation.stop();
+            }
         }
         
         this.calculateDirection(dt);
@@ -85,7 +100,7 @@ class Enemy {
         for (var a = this.bullets.length - 1; a >= 0; a--) {
             var bullet = this.bullets[a];
             bullet.update(dt);
-            if (bullet.collided) {
+            if (bullet.dispose) {
                 this.bullets.splice(a, 1);
             }
         }
@@ -95,6 +110,14 @@ class Enemy {
         }
         if (this.fireAnimation !== null) {
             this.fireAnimation.update(dt);
+        }
+    }
+    
+    damage() {
+        this.life--;
+        if (this.life <= 0) {
+            this.life = 0;
+            this.isDead = true;
         }
     }
     
@@ -228,7 +251,9 @@ class Enemy {
         context.fillRect(data.x - len / 2, halfY - len / 2, len, len);*/
         var image = "";
         var angle = this.getSpriteAngle();
-        if (this.fireAnimation !== null && !this.fireAnimation.isStopped()) {
+        if (this.isDead) {
+            image = "SS_DEAD_" + (this.deadAnimation.getFrame() + 1);
+        } else if (this.fireAnimation !== null && !this.fireAnimation.isStopped()) {
             image = "SS_FIRE_" + (this.fireAnimation.getFrame() + 1);
         } else if (this.velocity.x !== 0 || this.velocity.y !== 0) {
             image = "SS_RUN_" + angle + "_" + (this.runAnimation.getFrame() + 1);

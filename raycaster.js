@@ -40,7 +40,7 @@ class Raycaster {
                 var diff = spriteVector.sub(center);
                 finalRadians += diff.dot(right) >= 0 ? angle : -angle;
                 var x = finalRadians / this.fov * outputWidth;
-                this.data.push({z: z, x: x, object: sprite});
+                this.data.push({z: z * 0.9, x: x, object: sprite});
             }
         }
     }

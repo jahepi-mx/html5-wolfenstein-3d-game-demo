@@ -119,8 +119,17 @@ class Player {
         for (var a = this.bullets.length - 1; a >= 0; a--) {
             var bullet = this.bullets[a];
             bullet.update(dt);
-            if (bullet.collided) {
+            if (bullet.dispose) {
                 this.bullets.splice(a, 1);
+            } else {
+                for (let enemy of enemies) {
+                    var diff = enemy.position.sub(bullet.position);
+                    var size = enemy.length / 2 + bullet.length / 2;
+                    if (!bullet.collided && Math.abs(diff.x) <= size && Math.abs(diff.y) <= size) {
+                        bullet.collided = true;
+                        enemy.damage();
+                    }
+                }
             }
         }
     }
