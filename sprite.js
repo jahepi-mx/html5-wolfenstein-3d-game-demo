@@ -1,8 +1,7 @@
-class Sprite {
+class Sprite extends Tile {
     
-    constructor(x, y, length) {
-        this.position = new Vector(x, y);
-        this.length = length;
+    constructor(x, y, type, length, walkable) {
+        super(x, y, type, length, walkable);
         this.atlas = Atlas.getInstance();
         this.assets = Assets.getInstance();
         this.fireAnimation = new Animation(4, 2);
@@ -25,7 +24,7 @@ class Sprite {
         */
         var frame = "torch" + (this.fireAnimation.getFrame() + 1);
         var halfY = outputHeight / 2;
-        var length = 32;
+        var length = this.length;
         var height = length / data.z * distToPlane;
         context.drawImage(
             this.assets.spritesAtlas, 

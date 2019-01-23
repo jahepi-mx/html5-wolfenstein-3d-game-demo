@@ -17,6 +17,8 @@ class Player {
         this.shootTime = 0;
         this.shootTimeLimit = 1;
         this.bullets = [];
+        this.playerDirection = new Vector(0, 0);
+        this.viewDirection = new Vector(0, 0);
     }
     
     update(dt) {
@@ -26,25 +28,25 @@ class Player {
             this.bullets.push(new Bullet(this.position.clone(), new Vector(1, 0).setUnitAngle(this.rotation)));
             this.shootTime = 0;
         }
-        
-        if (this.forwardBool) {
-            this.velocity.x = this.velocityLength;
-            this.velocity.y = 0;
-            this.velocity.setAngle(this.rotation);
-        }
-        
-        if (this.backwardBool) {
-            this.velocity.x = this.velocityLength;
-            this.velocity.y = 0;
-            this.velocity.setAngle(this.rotation + Math.PI);
-        }
-        
+            
         if (this.rotateLeftBool) {
             this.rotation += this.radianStep * dt; 
         }
         
         if (this.rotateRightBool) {
             this.rotation -= this.radianStep * dt;
+        }
+        this.playerDirection.x = Math.cos(this.rotation);
+        this.playerDirection.y = Math.sin(this.rotation);
+        this.viewDirection.x = this.playerDirection.x;
+        this.viewDirection.y = this.playerDirection.y;
+        if (this.backwardBool) {
+            this.playerDirection.x = Math.cos(this.rotation + Math.PI);
+            this.playerDirection.y = Math.sin(this.rotation + Math.PI);
+        }
+        
+        if (this.forwardBool || this.backwardBool) {
+            this.velocity = this.playerDirection.mul(this.velocityLength);
         }
         
         if (this.openDoorBool) {
@@ -56,10 +58,9 @@ class Player {
                 if (newX >= 0 && newX < map.width && newY >= 0 && newY < map.height) {
                     var tile = map.tiles[newY * map.width + newX];
                     if (tile instanceof Door && !tile.walkable) {
-                        var playerDir = new Vector(1, 0).setAngle(this.rotation);
                         var diff = tile.position.sub(player.position);
                         // Open door if player is facing the door and it is really close to it.
-                        if (playerDir.dot(diff) > 0 && diff.dot(diff) <= 1550) {
+                        if (this.viewDirection.dot(diff) > 0 && diff.dot(diff) <= 1550) {
                             tile.open();
                         }
                     }

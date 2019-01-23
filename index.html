@@ -38,8 +38,7 @@ and open the template in the editor.
             var enemies = [];
             var raycaster = null;
             var raycasterRender = null;
-            var sprites = [];
-            var outputWidth = gameResWidth * 3;
+            var outputWidth = gameResWidth * 2;
             var pixelWidth = outputWidth / gameResWidth;
             var outputHeight = outputWidth / aspectRatio;
             var distToPlane = 0;
@@ -57,8 +56,6 @@ and open the template in the editor.
                 var playerX = map.tileLength * 1 + map.tileLength / 2;
                 var playerY = map.tileLength * 1 + map.tileLength / 2; 
                 player = new Player(playerX, playerY, 10);
-                sprites.push(new Sprite(map.tileLength * 3 + map.tileLength / 2, map.tileLength * 4, 30));
-                sprites.push(new Sprite(map.tileLength * 8 + map.tileLength / 2, map.tileLength * 2, 10));
                 raycaster = new Raycaster(gameResWidth);
                 raycasterRender = new RaycasterRender();
                 distToPlane = (outputWidth / 2) / Math.tan(raycaster.fov / 2);
@@ -97,18 +94,18 @@ and open the template in the editor.
                 context.fillText(fps, previewWidth - 10, 10);
                 for (let tile of map.tiles) {
                     tile.update(dt);
-                    //tile.render(context);
+                    tile.render(context);
                 }
-                for (let sprite of sprites) {
+                for (let sprite of map.sprites) {
                     sprite.update(dt);
-                    //sprite.render(context);
+                    sprite.render(context);
                 }
                 for (let enemy of enemies) {
                     enemy.update(dt);
-                    //enemy.render(context);
+                    enemy.render(context);
                 }
                 player.update(dt);
-                //player.render(context);
+                player.render(context);
                 
                 var data = raycaster.getData();
                 raycasterRender.data = data;
@@ -138,6 +135,6 @@ and open the template in the editor.
     </head>
     <body style="background-color: #000">
         <div style="text-align: center; margin: 0 auto; border: 2px solid red; width: 960px"><canvas id="game"></canvas></div>
-        <canvas style="display: none" id="canvas"></canvas>
+        <canvas style="display: visible" id="canvas"></canvas>
     </body>
 </html>

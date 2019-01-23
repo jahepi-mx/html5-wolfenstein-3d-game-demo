@@ -181,7 +181,7 @@ class Enemy {
     getSpriteAngle() {
         /*
          To see in which angle is the enemy sprite related to the player view direction,
-         We took first the direction where the player is pointing out (directionVectorFrom), this is the vector which is the viewing direction.
+         We took first the direction where the player is pointing out (player.viewDirection), this is the vector which is the viewing direction of the player.
          It is our X basis vector, and the Y basis vector can be derived from the following matrix:
            x     y
           [cos, -sin
@@ -198,9 +198,9 @@ class Enemy {
         
         Finally get the angle from the obtained vector to know in which angle the sprite should be rendered.
          */
-        var rad = player.rotation;
-        var cos = Math.cos(rad);
-        var sin = Math.sin(rad);
+        //var rad = player.rotation;
+        var cos = player.viewDirection.x; //Math.cos(rad);
+        var sin = player.viewDirection.y; //Math.sin(rad);
         var localX = this.directionVectorFrom.x * cos + this.directionVectorFrom.y * sin;
         var localY = this.directionVectorFrom.x * -sin + this.directionVectorFrom.y * cos;
         

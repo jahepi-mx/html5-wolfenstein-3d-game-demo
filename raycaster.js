@@ -10,9 +10,10 @@ class Raycaster {
     
     sprites() {
         var radians = player.rotation;
-        var center = new Vector(1, 0).setUnitAngle(radians);
+        // Vector where the player is looking at.
+        var center = player.viewDirection;
         var right = new Vector(1, 0).setUnitAngle(radians - this.fov / 2);
-        for (let sprite of sprites) {
+        for (let sprite of map.sprites) {
             this.calculateSpritePosition(sprite, center, right);
         }
         for (let bullet of player.bullets) {
