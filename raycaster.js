@@ -49,11 +49,11 @@ class Raycaster {
         var half = map.tileLength / 2;
         var vector = new Vector(0, 0);
         var rayVector = new Vector(cos, sin);
+        var tmpZ = 1 << 30;
+        var tmpData = null;
         for (let movingWall of map.movingWalls) {
             var sub = movingWall.position.sub(player.position);
             if (sub.dot(rayVector) > 0) {
-                var tmpZ = 1 << 30;
-                var tmpData = null;
                 // Check top
                 var newY = (movingWall.position.y + half) - player.position.y;
                 var hyp = newY / sin;
@@ -62,9 +62,12 @@ class Raycaster {
                 vector.addThis(player.position);
                 if (Math.abs(movingWall.position.x - vector.x) <= half && Math.abs(movingWall.position.y - vector.y) <= half) {
                     var ray = vector.sub(player.position);
-                    tmpZ = ray.length();
-                    var pixelWall = vector.x - (movingWall.position.x - half);
-                    tmpData = {z: tmpZ, x: tmpX * pixelWidth, object: movingWall, pixel: pixelWall, imageType: ROW_TYPE_IMAGE};
+                    var z = ray.length();
+                    if (z < tmpZ) {
+                        tmpZ = z;
+                        var pixelWall = vector.x - (movingWall.position.x - half);
+                        tmpData = {z: tmpZ, x: tmpX * pixelWidth, object: movingWall, pixel: pixelWall, imageType: ROW_TYPE_IMAGE};
+                    }
                 }
                 // Check bottom
                 var newY = (movingWall.position.y - half) - player.position.y;
@@ -106,15 +109,14 @@ class Raycaster {
                     var ray = vector.sub(player.position);
                     var z = ray.length();
                     if (z < tmpZ) {
+                        tmpZ = z;
                         var pixelWall = vector.y - (movingWall.position.y - half); 
                         tmpData = {z: z, x: tmpX * pixelWidth, object: movingWall, pixel: pixelWall, imageType: COL_TYPE_IMAGE};
                     }
                 }
-                if (tmpData !== null) {
-                    this.data.push(tmpData);
-                }
             }
         }
+        return tmpData;
     }
     
     wallsAndDoors() {
@@ -132,7 +134,7 @@ class Raycaster {
             // Direction line
             var rayVector = new Vector(cos, sin);
             var doorVector = new Vector(cos, sin).mul(map.tileLength / 2);
-            this.calculateMovingWalls(cos, sin, radians, tmpX);
+            var movingWall = this.calculateMovingWalls(cos, sin, radians, tmpX);
             for (var y = 0; y <= map.height; y++) {
                 var newY = map.tileLength * y - player.position.y;
                 var hyp = newY / sin;
@@ -196,9 +198,19 @@ class Raycaster {
             }        
             if (minVector !== null) {
                 var z = this.getFixedZ(minVector, radians);
-                this.data.push({z: z, x: tmpX * pixelWidth, object: minWall, pixel: pixelWall, imageType: wallImageType});
-                //context.fillStyle = "#00ff00";
-                //context.fillRect(origX + minVector.x, origY - minVector.y, 2, 2);
+                if (movingWall !== null) {
+                    if (movingWall.z < z) {
+                        this.data.push(movingWall);
+                    } else {
+                        this.data.push({z: z, x: tmpX * pixelWidth, object: minWall, pixel: pixelWall, imageType: wallImageType});
+                    }
+                } else {
+                    this.data.push({z: z, x: tmpX * pixelWidth, object: minWall, pixel: pixelWall, imageType: wallImageType});
+                    //context.fillStyle = "#00ff00";
+                    //context.fillRect(origX + minVector.x, origY - minVector.y, 2, 2);
+                }
+            } else if (movingWall !== null) {
+                this.data.push(movingWall);
             }
             radians -= this.radStep;
             tmpX++;
