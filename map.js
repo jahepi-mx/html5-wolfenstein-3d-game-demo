@@ -10,7 +10,7 @@ let MAP_MOVING_WALL = 7;
 class Map {
     constructor() {
         var map = [
-            1,1,1,1,1,4,1,1,1,1,1,1,1,1,1,1,
+            1,1,1,1,1,4,1,1,0,1,1,0,1,1,1,1,
             1,0,0,0,0,2,0,0,7,0,0,7,0,0,0,1,
             1,0,0,0,0,4,0,0,0,0,0,0,0,0,0,1,
             1,0,6,0,0,1,0,0,0,0,1,5,3,5,1,1,
@@ -28,6 +28,9 @@ class Map {
         this.movingWalls = [];
         this.doors = [];
         this.sprites = [];
+        
+        this.sprites.push(new Life(this.tileLength * 6, this.tileLength * 3, this.tileLength));
+        
         for (var a = 0; a < this.width * this.height; a++) {
             var x = a % this.width;
             var y = parseInt(a / this.width);

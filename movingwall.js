@@ -2,10 +2,12 @@ class MovingWall extends Tile {
     
     constructor(x, y, type, length) {
         super(x, y, type, length, false);
-        this.end = new Vector(this.position.x, this.position.y + length * 2);
+        this.end = new Vector(this.position.x, this.position.y + this.length);
         this.start = this.position.clone();
         this.to = this.end.clone();
         this.velocity = new Vector(10, 10);
+        this.colImage = "radioactive";
+        this.rowImage = "radioactive";
     }
     
     update(dt) {
@@ -22,9 +24,9 @@ class MovingWall extends Tile {
             this.position.y -= this.velocity.y * dt;
         }
         
-        if (sub.dot(sub) <= 100) {
+        if (sub.dot(sub) <= 2) {
             var tmp = this.start.sub(this.to);
-            if (tmp.dot(tmp) > 100) {
+            if (tmp.dot(tmp) > 2) {
                 this.to = this.start.clone();
             } else {
                 this.to = this.end.clone();

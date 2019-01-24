@@ -51,6 +51,7 @@ class Raycaster {
         var rayVector = new Vector(cos, sin);
         var tmpZ = 1 << 30;
         var tmpData = null;
+        var offsetFix = 0.2;
         var minVector = new Vector(0, 0);
         for (let movingWall of map.movingWalls) {
             var sub = movingWall.position.sub(player.position);
@@ -62,7 +63,7 @@ class Raycaster {
                 vector.y = newY;
                 var z = vector.dot(vector);
                 vector.addThis(player.position);
-                if (Math.abs(movingWall.position.x - vector.x) - 1 <= half && Math.abs(movingWall.position.y - vector.y) - 1 <= half) {
+                if (Math.abs(movingWall.position.x - vector.x) - offsetFix <= half && Math.abs(movingWall.position.y - vector.y) - offsetFix <= half) {
                     if (z < tmpZ) {
                         tmpZ = z;
                         minVector.x = vector.x;
@@ -78,7 +79,7 @@ class Raycaster {
                 vector.y = newY;
                 var z = vector.dot(vector);
                 vector.addThis(player.position);
-                if (Math.abs(movingWall.position.x - vector.x) - 1 <= half && Math.abs(movingWall.position.y - vector.y) - 1 <= half) {
+                if (Math.abs(movingWall.position.x - vector.x) - offsetFix <= half && Math.abs(movingWall.position.y - vector.y) - offsetFix <= half) {
                     if (z < tmpZ) {
                         tmpZ = z;
                         minVector.x = vector.x;
@@ -94,7 +95,7 @@ class Raycaster {
                 vector.y = sin * hyp;
                 var z = vector.dot(vector);
                 vector.addThis(player.position);
-                if (Math.abs(movingWall.position.x - vector.x) - 1 <= half && Math.abs(movingWall.position.y - vector.y) - 1 <= half) {
+                if (Math.abs(movingWall.position.x - vector.x) - offsetFix <= half && Math.abs(movingWall.position.y - vector.y) - offsetFix <= half) {
                     if (z < tmpZ) {
                         tmpZ = z;
                         minVector.x = vector.x;
@@ -110,7 +111,7 @@ class Raycaster {
                 vector.y = sin * hyp;
                 var z = vector.dot(vector);
                 vector.addThis(player.position);
-                if (Math.abs(movingWall.position.x - vector.x) - 1 <= half && Math.abs(movingWall.position.y - vector.y) - 1 <= half) {
+                if (Math.abs(movingWall.position.x - vector.x) - offsetFix <= half && Math.abs(movingWall.position.y - vector.y) - offsetFix <= half) {
                     if (z < tmpZ) {
                         tmpZ = z;
                         minVector.x = vector.x;
