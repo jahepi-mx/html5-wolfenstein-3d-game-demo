@@ -51,6 +51,7 @@ class Raycaster {
         var rayVector = new Vector(cos, sin);
         var tmpZ = 1 << 30;
         var tmpData = null;
+        var minVector = new Vector(0, 0);
         for (let movingWall of map.movingWalls) {
             var sub = movingWall.position.sub(player.position);
             if (sub.dot(rayVector) > 0) {
@@ -59,14 +60,15 @@ class Raycaster {
                 var hyp = newY / sin;
                 vector.x = cos * hyp;
                 vector.y = newY;
+                var z = vector.dot(vector);
                 vector.addThis(player.position);
-                if (Math.abs(movingWall.position.x - vector.x) <= half && Math.abs(movingWall.position.y - vector.y) <= half) {
-                    var ray = vector.sub(player.position);
-                    var z = ray.length();
+                if (Math.abs(movingWall.position.x - vector.x) - 1 <= half && Math.abs(movingWall.position.y - vector.y) - 1 <= half) {
                     if (z < tmpZ) {
                         tmpZ = z;
+                        minVector.x = vector.x;
+                        minVector.y = vector.y;
                         var pixelWall = vector.x - (movingWall.position.x - half);
-                        tmpData = {z: tmpZ, x: tmpX * pixelWidth, object: movingWall, pixel: pixelWall, imageType: ROW_TYPE_IMAGE};
+                        tmpData = {z: 0, x: tmpX * pixelWidth, object: movingWall, pixel: pixelWall, imageType: ROW_TYPE_IMAGE};
                     }
                 }
                 // Check bottom
@@ -74,14 +76,15 @@ class Raycaster {
                 var hyp = newY / sin;
                 vector.x = cos * hyp;
                 vector.y = newY;
+                var z = vector.dot(vector);
                 vector.addThis(player.position);
-                if (Math.abs(movingWall.position.x - vector.x) <= half && Math.abs(movingWall.position.y - vector.y) <= half) {
-                    var ray = vector.sub(player.position);
-                    var z = ray.length();
+                if (Math.abs(movingWall.position.x - vector.x) - 1 <= half && Math.abs(movingWall.position.y - vector.y) - 1 <= half) {
                     if (z < tmpZ) {
                         tmpZ = z;
+                        minVector.x = vector.x;
+                        minVector.y = vector.y;
                         var pixelWall = vector.x - (movingWall.position.x - half); 
-                        tmpData = {z: z, x: tmpX * pixelWidth, object: movingWall, pixel: pixelWall, imageType: ROW_TYPE_IMAGE};
+                        tmpData = {z: 0, x: tmpX * pixelWidth, object: movingWall, pixel: pixelWall, imageType: ROW_TYPE_IMAGE};
                     }
                 }
                 // Check left
@@ -89,14 +92,15 @@ class Raycaster {
                 var hyp = newX / cos;
                 vector.x = newX;
                 vector.y = sin * hyp;
+                var z = vector.dot(vector);
                 vector.addThis(player.position);
-                if (Math.abs(movingWall.position.x - vector.x) <= half && Math.abs(movingWall.position.y - vector.y) <= half) {
-                    var ray = vector.sub(player.position);
-                    var z = ray.length();
+                if (Math.abs(movingWall.position.x - vector.x) - 1 <= half && Math.abs(movingWall.position.y - vector.y) - 1 <= half) {
                     if (z < tmpZ) {
                         tmpZ = z;
+                        minVector.x = vector.x;
+                        minVector.y = vector.y;
                         var pixelWall = vector.y - (movingWall.position.y - half); 
-                        tmpData = {z: tmpZ, x: tmpX * pixelWidth, object: movingWall, pixel: pixelWall, imageType: COL_TYPE_IMAGE};
+                        tmpData = {z: 0, x: tmpX * pixelWidth, object: movingWall, pixel: pixelWall, imageType: COL_TYPE_IMAGE};
                     }
                 }
                 // Check right
@@ -104,17 +108,21 @@ class Raycaster {
                 var hyp = newX / cos;
                 vector.x = newX;
                 vector.y = sin * hyp;
+                var z = vector.dot(vector);
                 vector.addThis(player.position);
-                if (Math.abs(movingWall.position.x - vector.x) <= half && Math.abs(movingWall.position.y - vector.y) <= half) {
-                    var ray = vector.sub(player.position);
-                    var z = ray.length();
+                if (Math.abs(movingWall.position.x - vector.x) - 1 <= half && Math.abs(movingWall.position.y - vector.y) - 1 <= half) {
                     if (z < tmpZ) {
                         tmpZ = z;
+                        minVector.x = vector.x;
+                        minVector.y = vector.y;
                         var pixelWall = vector.y - (movingWall.position.y - half); 
-                        tmpData = {z: z, x: tmpX * pixelWidth, object: movingWall, pixel: pixelWall, imageType: COL_TYPE_IMAGE};
+                        tmpData = {z: 0, x: tmpX * pixelWidth, object: movingWall, pixel: pixelWall, imageType: COL_TYPE_IMAGE};
                     }
                 }
             }
+        }
+        if (tmpData !== null) {
+            tmpData.z = this.getFixedZ(minVector, radians);
         }
         return tmpData;
     }

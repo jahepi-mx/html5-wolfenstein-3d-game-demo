@@ -2,7 +2,7 @@ class MovingWall extends Tile {
     
     constructor(x, y, type, length) {
         super(x, y, type, length, false);
-        this.end = new Vector(this.position.x + length * 2, this.position.y);
+        this.end = new Vector(this.position.x, this.position.y + length * 2);
         this.start = this.position.clone();
         this.to = this.end.clone();
         this.velocity = new Vector(10, 10);
