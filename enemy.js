@@ -1,6 +1,7 @@
 class Enemy {
     
-    constructor(x, y, velocity) {
+    constructor(x, y, velocity, map) {
+        this.map = map;
         this.length = 25;
         this.moves = [[-1, 0], [0, -1], [1, 0], [0, 1]];
         this.position = new Vector(map.tileLength * x + map.tileLength / 2, map.tileLength * y + map.tileLength / 2);
@@ -121,6 +122,7 @@ class Enemy {
     }
     
     pathfinding() {
+        var map = this.map;
         var fromX = parseInt(this.position.x / map.tileLength);
         var fromY = parseInt(this.position.y / map.tileLength);
         var fromTile = map.tiles[fromY * map.width + fromX];
@@ -248,6 +250,7 @@ class Enemy {
         context.fillStyle = "#ffe8e8";
         var len = this.length  / data.z * distToPlane;
         context.fillRect(data.x - len / 2, halfY - len / 2, len, len);*/
+        var map = this.map;
         var image = "";
         var angle = this.getSpriteAngle();
         if (this.isDead) {

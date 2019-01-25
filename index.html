@@ -61,14 +61,6 @@ and open the template in the editor.
                 raycaster = new Raycaster(gameResWidth);
                 raycasterRender = new RaycasterRender();
                 distToPlane = (outputWidth / 2) / Math.tan(raycaster.fov / 2);
-                
-                var enemy = new Enemy(8, 5, 20, 20);
-                enemies.push(enemy);
-                var enemy = new Enemy(8, 4, 40, 40);
-                enemies.push(enemy);
-                var enemy = new Enemy(4, 5, 60, 60);
-                enemies.push(enemy);
-                
                 var assets = Assets.getInstance();
                 assets.loadAll(onLoadAssets, onDownloadAssets);
             };
@@ -104,7 +96,7 @@ and open the template in the editor.
                     sprite.update(dt);
                     //sprite.render(context);
                 }
-                for (let enemy of enemies) {
+                for (let enemy of map.enemies) {
                     enemy.update(dt);
                     //enemy.render(context);
                 }

@@ -17,10 +17,13 @@ class Raycaster {
         for (let sprite of map.sprites) {
             this.calculateSpritePosition(sprite, center, right);
         }
+        for (let item of map.items) {
+            this.calculateSpritePosition(item, center, right);
+        }
         for (let bullet of player.bullets) {
             this.calculateSpritePosition(bullet, center, right);
         }
-        for (let enemy of enemies) {
+        for (let enemy of map.enemies) {
             this.calculateSpritePosition(enemy, center, right);
             for (let enemyBullet of enemy.bullets) {
                 this.calculateSpritePosition(enemyBullet, center, right);

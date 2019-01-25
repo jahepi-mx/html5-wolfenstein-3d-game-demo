@@ -2,9 +2,10 @@ class Life {
     
     constructor(x, y, length) {
         this.length = length;
-        this.position = new Vector(x, y);
+        this.position = new Vector(this.length * x + this.length / 2, this.length * y + this.length / 2);
         this.atlas = Atlas.getInstance();
         this.assets = Assets.getInstance();
+        this.dispose = false;
     }
     
     update(dt) {

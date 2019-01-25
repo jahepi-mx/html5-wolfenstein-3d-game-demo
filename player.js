@@ -20,9 +20,12 @@ class Player {
         this.playerDirection = new Vector(0, 0);
         this.viewDirection = new Vector(0, 0);
         this.isShooting = false;
+        this.takingLifeLimit = 0.1;
+        this.takingLife = this.takingLifeLimit;
     }
     
     update(dt) {
+        this.takingLife += dt;
         this.isShooting = false;
         this.shootTime += dt;
         if (this.shootTime >= this.shootTimeLimit && this.shootBool) {
@@ -124,7 +127,7 @@ class Player {
             if (bullet.dispose) {
                 this.bullets.splice(a, 1);
             } else {
-                for (let enemy of enemies) {
+                for (let enemy of map.enemies) {
                     if (!enemy.isDead) {
                         var diff = enemy.position.sub(bullet.position);
                         var size = enemy.length / 2 + bullet.length / 2;
@@ -136,6 +139,25 @@ class Player {
                 }
             }
         }
+        
+        for (var a = map.items.length - 1; a >= 0; a--) {
+            var item = map.items[a];
+            item.update(dt);
+            if (item.dispose) {
+                map.items.splice(a, 1);
+            } else {
+                var diff = item.position.sub(this.position);
+                var size = item.length / 2;
+                if (Math.abs(diff.x) <= size && Math.abs(diff.y) <= size) {
+                    item.dispose = true;
+                    this.takingLife = 0;
+                }
+            }
+        }
+    }
+    
+    isTakingLife() {
+        return this.takingLife < this.takingLifeLimit;
     }
     
     render(context) {

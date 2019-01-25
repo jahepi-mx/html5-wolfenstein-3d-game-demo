@@ -52,9 +52,17 @@ class Map {
         this.movingWalls = [];
         this.doors = [];
         this.sprites = [];
+        this.enemies = [];
+        this.items = [];
         
-        this.sprites.push(new Life(this.tileLength * 6, this.tileLength * 3, this.tileLength));
-        
+        this.items.push(new Life(6, 3, this.tileLength));
+        this.items.push(new Life(6, 2, this.tileLength));
+        this.items.push(new Life(19, 1, this.tileLength));
+        this.items.push(new Life(19, 2, this.tileLength));
+        this.items.push(new Life(19, 3, this.tileLength));
+        this.items.push(new Life(19, 4, this.tileLength));
+        this.items.push(new Life(19, 5, this.tileLength));
+
         for (var a = 0; a < this.width * this.height; a++) {
             var x = a % this.width;
             var y = parseInt(a / this.width);
@@ -91,6 +99,13 @@ class Map {
             
             this.tiles[newY * this.width + x] = tile;
         }
+        
+        var enemy = new Enemy(8, 5, 20, this);
+        this.enemies.push(enemy);
+        var enemy = new Enemy(8, 4, 40, this);
+        this.enemies.push(enemy);
+        var enemy = new Enemy(4, 5, 60, this);
+        this.enemies.push(enemy);
     }
 }
 

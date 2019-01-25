@@ -22,7 +22,7 @@ class Door extends Tile {
                 if (diff.dot(diff) <= 1000) {
                     success = false;
                 }
-                for (let enemy of enemies) {
+                for (let enemy of map.enemies) {
                     var diff = enemy.position.sub(this.position);
                     if (diff.dot(diff) <= 1000) {
                         success = false;

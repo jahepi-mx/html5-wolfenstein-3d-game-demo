@@ -47,6 +47,11 @@ class RaycasterRender {
             outputHeight - len,
             len,
             len);
+        
+        if (player.isTakingLife()) {
+            context.fillStyle = "rgba(255,255,255,0.5)";
+            context.fillRect(0, 0, outputWidth, outputHeight);
+        }
     }
 }
 
