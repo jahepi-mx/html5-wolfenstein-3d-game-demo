@@ -6,6 +6,7 @@ class Raycaster {
         this.radStep = this.fov / (this.numberOfRays - 1);
         this.tileDirs = [[0, 0], [1, 0], [0, 1], [-1, 0], [0, -1]];
         this.data = [];
+        this.maxVisibility = 1000000;
     }
     
     sprites() {
@@ -29,18 +30,20 @@ class Raycaster {
     
     calculateSpritePosition(sprite, center, right) {
         var spriteVector = sprite.position.sub(player.position);
-        var z = spriteVector.length();
-        spriteVector = spriteVector.normalize();
-        var dot = spriteVector.dot(center);
-        if (dot >= 0) {
-            dot = dot > 1 ? 1 : dot < -1 ? -1 : dot;
-            var angle = Math.acos(dot);
-            if (angle < this.fov) {
-                var finalRadians = this.fov / 2;
-                var diff = spriteVector.sub(center);
-                finalRadians += diff.dot(right) >= 0 ? angle : -angle;
-                var x = finalRadians / this.fov * outputWidth;
-                this.data.push({z: z * 0.9, x: x, object: sprite});
+        if (spriteVector.dot(spriteVector) <= this.maxVisibility) {
+            var z = spriteVector.length();
+            spriteVector = spriteVector.normalize();
+            var dot = spriteVector.dot(center);
+            if (dot >= 0) {
+                dot = dot > 1 ? 1 : dot < -1 ? -1 : dot;
+                var angle = Math.acos(dot);
+                if (angle < this.fov) {
+                    var finalRadians = this.fov / 2;
+                    var diff = spriteVector.sub(center);
+                    finalRadians += diff.dot(right) >= 0 ? angle : -angle;
+                    var x = finalRadians / this.fov * outputWidth;
+                    this.data.push({z: z * 0.9, x: x, object: sprite});
+                }
             }
         }
     }
@@ -55,7 +58,7 @@ class Raycaster {
         var minVector = new Vector(0, 0);
         for (let movingWall of map.movingWalls) {
             var sub = movingWall.position.sub(player.position);
-            if (sub.dot(rayVector) > 0) {
+            if (sub.dot(rayVector) > 0 && sub.dot(sub) <= this.maxVisibility) {
                 // Check top
                 var newY = (movingWall.position.y + half) - player.position.y;
                 var hyp = newY / sin;
@@ -123,7 +126,7 @@ class Raycaster {
             }
         }
         if (tmpData !== null) {
-            tmpData.z = this.getFixedZ(minVector, radians);
+            tmpData.z = this.getFixedZ(minVector.sub(player.position), radians);
         }
         return tmpData;
     }
@@ -157,14 +160,18 @@ class Raycaster {
                     var newRayDoorVector = vector.add(doorVector);
                     var door = this.collideDoor(newRayDoorVector, MAP_DOOR_ROW);
                     if (door !== null && door.isPixelVisible(newRayDoorVector)) {
-                        var z = this.getFixedZ(newRayDoorVector, radians);
-                        this.data.push({z: z, x: tmpX * pixelWidth, object: door, pixel: newRayDoorVector.x % map.tileLength});
+                        var tmpVector = newRayDoorVector.sub(player.position);
+                        if (tmpVector.dot(tmpVector) <= this.maxVisibility) {
+                            var z = this.getFixedZ(tmpVector, radians);
+                            this.data.push({z: z, x: tmpX * pixelWidth, object: door, pixel: newRayDoorVector.x % map.tileLength});
+                        }
                     }
                     // Check if ray point collide with a wall
                     var wall = this.collideWall(vector);
                     if (wall !== null) {
                         var diff = vector.sub(player.position);
-                        if (diff.dot(diff) < minRayLen) {
+                        var dot = diff.dot(diff);
+                        if (dot < minRayLen && dot <= this.maxVisibility) {
                             minRayLen = diff.dot(diff);
                             minVector = vector;
                             minWall = wall;
@@ -188,14 +195,18 @@ class Raycaster {
                     var newRayDoorVector = vector.add(doorVector);
                     var door = this.collideDoor(newRayDoorVector, MAP_DOOR_COL);
                     if (door !== null && door.isPixelVisible(newRayDoorVector)) {
-                        var z = this.getFixedZ(newRayDoorVector, radians);
-                        this.data.push({z: z, x: tmpX * pixelWidth, object: door, pixel: newRayDoorVector.y % map.tileLength});
+                        var tmpVector = newRayDoorVector.sub(player.position);
+                        if (tmpVector.dot(tmpVector) <= this.maxVisibility) {
+                            var z = this.getFixedZ(tmpVector, radians);
+                            this.data.push({z: z, x: tmpX * pixelWidth, object: door, pixel: newRayDoorVector.y % map.tileLength});
+                        }
                     }
                     // Check if ray point collide with a wall
                     var wall = this.collideWall(vector);
                     if (wall !== null) {
                         var diff = vector.sub(player.position);
-                        if (diff.dot(diff) < minRayLen) {
+                        var dot = diff.dot(diff);
+                        if (dot < minRayLen && dot <= this.maxVisibility) {
                             minRayLen = diff.dot(diff);
                             minVector = vector;
                             minWall = wall;
@@ -206,7 +217,7 @@ class Raycaster {
                 }
             }        
             if (minVector !== null) {
-                var z = this.getFixedZ(minVector, radians);
+                var z = this.getFixedZ(minVector.sub(player.position), radians);
                 if (movingWall !== null) {
                     if (movingWall.z < z) {
                         this.data.push(movingWall);
@@ -226,9 +237,8 @@ class Raycaster {
         }
     }
     
-    getFixedZ(vector, radians) {
+    getFixedZ(ray, radians) {
         // Calculate distance of the ray avoiding distortion (fish eye effect)
-        var ray = vector.sub(player.position);
         var length = ray.length();
         var radDiff = player.rotation - radians;
         return Math.cos(radDiff) * length;
