@@ -139,7 +139,10 @@ class Raycaster {
         var radians = player.rotation + this.fov / 2;
         for (var a = 0; a < this.numberOfRays; a++) {
             var minRayLen = 1 << 30; // 30 bit number enough?
+            var minDoorRayLen = 1 << 30; // 30 bit number enough?
             var minVector = null;
+            var minDoorVector = null;
+            var doorObject = null;
             var pixelWall = 0;
             var minWall = null;
             var wallImageType = null;
@@ -164,9 +167,11 @@ class Raycaster {
                     var door = this.collideDoor(newRayDoorVector, MAP_DOOR_ROW);
                     if (door !== null && door.isPixelVisible(newRayDoorVector)) {
                         var tmpVector = newRayDoorVector.sub(player.position);
-                        if (tmpVector.dot(tmpVector) <= this.maxVisibility) {
-                            var z = this.getFixedZ(tmpVector, radians);
-                            this.data.push({z: z, x: tmpX * pixelWidth, object: door, pixel: newRayDoorVector.x % map.tileLength});
+                        var dot = tmpVector.dot(tmpVector);
+                        if (dot <= this.maxVisibility && dot < minDoorRayLen) {
+                            minDoorVector = tmpVector;
+                            minDoorRayLen = dot;
+                            doorObject = {z: 0, x: tmpX * pixelWidth, object: door, pixel: newRayDoorVector.x % map.tileLength};
                         }
                     }
                     // Check if ray point collide with a wall
@@ -175,7 +180,7 @@ class Raycaster {
                         var diff = vector.sub(player.position);
                         var dot = diff.dot(diff);
                         if (dot < minRayLen && dot <= this.maxVisibility) {
-                            minRayLen = diff.dot(diff);
+                            minRayLen = dot;
                             minVector = vector;
                             minWall = wall;
                             pixelWall = vector.x % map.tileLength;
@@ -199,9 +204,11 @@ class Raycaster {
                     var door = this.collideDoor(newRayDoorVector, MAP_DOOR_COL);
                     if (door !== null && door.isPixelVisible(newRayDoorVector)) {
                         var tmpVector = newRayDoorVector.sub(player.position);
-                        if (tmpVector.dot(tmpVector) <= this.maxVisibility) {
-                            var z = this.getFixedZ(tmpVector, radians);
-                            this.data.push({z: z, x: tmpX * pixelWidth, object: door, pixel: newRayDoorVector.y % map.tileLength});
+                        var dot = tmpVector.dot(tmpVector);
+                        if (dot <= this.maxVisibility && dot < minDoorRayLen) {
+                            minDoorVector = tmpVector;
+                            minDoorRayLen = dot;
+                            doorObject = {z: 0, x: tmpX * pixelWidth, object: door, pixel: newRayDoorVector.y % map.tileLength}
                         }
                     }
                     // Check if ray point collide with a wall
@@ -210,7 +217,7 @@ class Raycaster {
                         var diff = vector.sub(player.position);
                         var dot = diff.dot(diff);
                         if (dot < minRayLen && dot <= this.maxVisibility) {
-                            minRayLen = diff.dot(diff);
+                            minRayLen = dot;
                             minVector = vector;
                             minWall = wall;
                             pixelWall = vector.y % map.tileLength;
@@ -218,7 +225,11 @@ class Raycaster {
                         }
                     }
                 }
-            }        
+            }
+            if (doorObject !== null) {
+                doorObject.z = this.getFixedZ(minDoorVector, radians);
+                this.data.push(doorObject);
+            }
             if (minVector !== null) {
                 var z = this.getFixedZ(minVector.sub(player.position), radians);
                 if (movingWall !== null) {
@@ -288,12 +299,10 @@ class Raycaster {
     getData() {
         this.data = [];
         this.sprites();
-        this.wallsAndDoors();
-        
+        this.wallsAndDoors();       
         this.data.sort(function(o1, o2) {
             return o1.z < o2.z ? 1 : o1.z > o2.z ? -1 : 0;
         });
-        
         return this.data;
     }
 }
