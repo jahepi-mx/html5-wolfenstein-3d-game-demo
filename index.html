@@ -7,13 +7,17 @@ and open the template in the editor.
 <html>
     <head>
         <title>TODO supply a title</title>
+        <style type="text/css">
+            @font-face { font-family: 'joystix'; src: url('assets/fonts/PixelMYZ.ttf'); }
+        </style>
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <script type="text/javascript" src="vector.js"></script>
         <script type="text/javascript" src="player.js"></script>
         <script type="text/javascript" src="tile.js"></script>
         <script type="text/javascript" src="movingwall.js"></script>
-        <script type="text/javascript" src="map.js"></script>
+        <script type="text/javascript" src="maps/map.js"></script>
+        <script type="text/javascript" src="maps/level1.js"></script>
         <script type="text/javascript" src="sprite.js"></script>
         <script type="text/javascript" src="bullet.js"></script>
         <script type="text/javascript" src="priorityqueue.js"></script>
@@ -44,6 +48,7 @@ and open the template in the editor.
             var pixelWidth = outputWidth / gameResWidth;
             var outputHeight = outputWidth / aspectRatio;
             var distToPlane = 0;
+            var restart = false;
             
             window.onload = function() {
                 canvas = document.getElementById("canvas");
@@ -54,10 +59,10 @@ and open the template in the editor.
                 contextGame = canvasGame.getContext("2d");
                 canvasGame.width = outputWidth;
                 canvasGame.height = outputHeight;
-                map = new Map();
-                var playerX = map.tileLength * 1 + map.tileLength / 2;
-                var playerY = map.tileLength * 1 + map.tileLength / 2; 
-                player = new Player(playerX, playerY, 10);
+                player = new Player(0, 0, 10);
+                map = new Level1(player);
+                map.load();
+                
                 raycaster = new Raycaster(gameResWidth);
                 raycasterRender = new RaycasterRender();
                 distToPlane = (outputWidth / 2) / Math.tan(raycaster.fov / 2);
@@ -83,6 +88,14 @@ and open the template in the editor.
             }
             
             function update(time) {
+                
+                if (restart) {
+                    player.reset();
+                    raycasterRender.reset();
+                    map.reset();
+                    restart = false;
+                }
+                
                 var dt = (time - prevTime) / 1000;
                 prevTime = time;
                 var fps = parseInt(1 / dt);
@@ -117,6 +130,11 @@ and open the template in the editor.
                 if (evt.keyCode === 83) player.backward(true);
                 if (evt.keyCode === 32) player.shoot(true);
                 if (evt.keyCode === 69) player.openDoor(true);
+                if (evt.keyCode === 82) {
+                    if (player.isDead) {
+                        restart = true;
+                    }
+                }
             }
             
             function onKeyUp(evt) {
@@ -134,5 +152,6 @@ and open the template in the editor.
             <canvas style="display: visible" id="game"></canvas>
         </div>
         <canvas style="display: none" id="canvas"></canvas>
+        <span style="font-family: joystix; display: none">Hidden text just for loading font before canvas.</span>
     </body>
 </html>

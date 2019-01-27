@@ -16,17 +16,11 @@ class Door extends Tile {
         if (this.isClosingCountdown) {
             this.closeTimeCount += dt;
             if (this.closeTimeCount >= this.closeTime) {
-                // Check if there are enemies or the player to not close the door
+                // Check if the player is nearby
                 var success = true;
                 var diff = player.position.sub(this.position);
                 if (diff.dot(diff) <= 1000) {
                     success = false;
-                }
-                for (let enemy of map.enemies) {
-                    var diff = enemy.position.sub(this.position);
-                    if (diff.dot(diff) <= 1000) {
-                        success = false;
-                    }
                 }
                 if (success) {
                     this.walkable = false;

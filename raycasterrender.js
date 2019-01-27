@@ -7,6 +7,8 @@ class RaycasterRender {
         this.fireAnimation = new Animation(4, 4);
         this.fireAnimation.stopAtSequenceNumber(1, null);
         this.fireAnimation.stop();
+        this.lifeWidth = 200;
+        this.origLifeWidth = this.lifeWidth;
     }
     
     render(context, dt, fps) {
@@ -21,7 +23,7 @@ class RaycasterRender {
             data.object.renderRaycaster(context, data);
         }
         context.fillStyle = "#00ff00";
-        context.font = "20px Arial";
+        context.font = "30px joystix";
         context.fillText(fps, outputWidth - 30, 30);
         
         if (player.isShooting && this.fireAnimation.isStopped()) {
@@ -52,6 +54,35 @@ class RaycasterRender {
             context.fillStyle = "rgba(255,255,255,0.5)";
             context.fillRect(0, 0, outputWidth, outputHeight);
         }
+        
+        context.fillStyle = "#fff";
+        context.font = "30px joystix";
+        context.fillText("LIFE", 30, 30);
+        
+        context.fillStyle = "#ff0000";
+        
+        var currWidth = player.life / player.maxLife * this.origLifeWidth;
+        this.lifeWidth += (currWidth - this.lifeWidth) * dt; 
+        context.fillRect(80, 13, this.lifeWidth, 20);
+        
+        if (player.isDamageLife() || player.isDead) {
+            context.fillStyle = "rgba(255,0,0,0.5)";
+            context.fillRect(0, 0, outputWidth, outputHeight);  
+        }
+        
+        if (player.isDead) {
+            context.fillStyle = "#fff";
+            context.font = "50px joystix";
+            context.fillText("YOU DIED. PRESS R TO RESTART LEVEL", outputWidth / 2 - 290, outputHeight / 2);
+        }
+    }
+    
+    reset() {
+        this.data = [];
+        this.fireAnimation = new Animation(4, 4);
+        this.fireAnimation.stopAtSequenceNumber(1, null);
+        this.fireAnimation.stop();
+        this.lifeWidth = this.origLifeWidth;
     }
 }
 

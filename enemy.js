@@ -16,6 +16,8 @@ class Enemy {
         this.bullets = [];
         this.shootTime = 0;
         this.shootTimeLimit = 1;
+        this.searchDoorTime = 0;
+        this.searchDoorTimeLimit = 0.5;
         this.atlas = Atlas.getInstance();
         this.assets = Assets.getInstance();
         this.runAnimation = new Animation(4, 2);
@@ -42,6 +44,23 @@ class Enemy {
             this.path = [];
             this.pathfinding();
             this.searchTime = 0;
+        }
+        
+        this.searchDoorTime += dt;
+        if (this.searchDoorTime > this.searchDoorTimeLimit) {
+            var currX = parseInt(this.position.x / this.map.tileLength);
+            var currY = parseInt(this.position.y / this.map.tileLength);
+            for (let move of this.moves) {
+                var currXTmp = currX + move[0];
+                var currYTmp = currY + move[1];
+                if (currXTmp >= 0 && currXTmp < this.map.width && currYTmp >= 0 && currYTmp < this.map.height) {
+                    var door = this.map.tiles[currYTmp * this.map.width + currXTmp];
+                    if (door.type === MAP_DOOR_COL || door.type === MAP_DOOR_ROW) {
+                        door.open();
+                    }
+                }
+            }
+            this.searchDoorTime = 0;
         }
         
         var playerVector = player.position.sub(this.position);
@@ -110,6 +129,21 @@ class Enemy {
         }
         if (!this.fireAnimation.isStopped()) {
             this.fireAnimation.update(dt);
+        }
+        
+        for (var a = this.bullets.length - 1; a >= 0; a--) {
+            var bullet = this.bullets[a];
+            bullet.update(dt);
+            if (bullet.dispose) {
+                this.bullets.splice(a, 1);
+            } else {
+                var diff = player.position.sub(bullet.position);
+                var size = player.length / 2 + this.length / 2;
+                if (!bullet.collided && Math.abs(diff.x) <= size && Math.abs(diff.y) <= size) {
+                    bullet.collided = true;
+                    player.damage();
+                }
+            }
         }
     }
     

@@ -32,5 +32,12 @@ class MovingWall extends Tile {
                 this.to = this.end.clone();
             }
         }
+        
+        var x = Math.abs(player.position.x - this.position.x);
+        var y = Math.abs(player.position.y - this.position.y);
+        var size = this.length / 2 + player.length / 2;
+        if (x <= size && y <= size) {
+            player.kill();
+        }
     }
 }

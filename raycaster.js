@@ -7,6 +7,7 @@ class Raycaster {
         this.tileDirs = [[0, 0], [1, 0], [0, 1], [-1, 0], [0, -1]];
         this.data = [];
         this.maxVisibility = 1000000;
+        this.tmpObjects = [];
     }
     
     sprites() {
@@ -139,7 +140,7 @@ class Raycaster {
         var radians = player.rotation + this.fov / 2;
         for (var a = 0; a < this.numberOfRays; a++) {
             var minRayLen = 1 << 30; // 30 bit number enough?
-            var minDoorRayLen = 1 << 30; // 30 bit number enough?
+            var minDoorRayLen = 1 << 30;
             var minVector = null;
             var minDoorVector = null;
             var doorObject = null;
@@ -152,7 +153,7 @@ class Raycaster {
             // Direction line
             var rayVector = new Vector(cos, sin);
             var doorVector = new Vector(cos, sin).mul(map.tileLength / 2);
-            var movingWall = this.calculateMovingWalls(cos, sin, radians, tmpX);
+            var movingWallObject = this.calculateMovingWalls(cos, sin, radians, tmpX);
             for (var y = 0; y <= map.height; y++) {
                 var newY = map.tileLength * y - player.position.y;
                 var hyp = newY / sin;
@@ -226,25 +227,28 @@ class Raycaster {
                     }
                 }
             }
+            var wallObject = null;
+            var objectToRender = null;
             if (doorObject !== null) {
                 doorObject.z = this.getFixedZ(minDoorVector, radians);
-                this.data.push(doorObject);
             }
             if (minVector !== null) {
-                var z = this.getFixedZ(minVector.sub(player.position), radians);
-                if (movingWall !== null) {
-                    if (movingWall.z < z) {
-                        this.data.push(movingWall);
-                    } else {
-                        this.data.push({z: z, x: tmpX * pixelWidth, object: minWall, pixel: pixelWall, imageType: wallImageType});
-                    }
-                } else {
-                    this.data.push({z: z, x: tmpX * pixelWidth, object: minWall, pixel: pixelWall, imageType: wallImageType});
-                    //context.fillStyle = "#00ff00";
-                    //context.fillRect(origX + minVector.x, origY - minVector.y, 2, 2);
+                wallObject = {z: this.getFixedZ(minVector.sub(player.position), radians), x: tmpX * pixelWidth, object: minWall, pixel: pixelWall, imageType: wallImageType};
+            }
+            this.tmpObjects[0] = doorObject !== null ? doorObject : null;
+            this.tmpObjects[1] = wallObject !== null ? wallObject : null;
+            this.tmpObjects[2] = movingWallObject !== null ? movingWallObject : null;
+            var min = 1 << 30;
+            for (let object of this.tmpObjects) {
+                if (object !== null && object.z < min) {
+                    min = object.z;
+                    objectToRender = object;
                 }
-            } else if (movingWall !== null) {
-                this.data.push(movingWall);
+            }
+            if (objectToRender !== null) {
+                this.data.push(objectToRender);
+                //context.fillStyle = "#00ff00";
+                //context.fillRect(origX + minVector.x, origY - minVector.y, 2, 2);
             }
             radians -= this.radStep;
             tmpX++;

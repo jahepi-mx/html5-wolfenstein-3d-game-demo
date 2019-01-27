@@ -22,10 +22,21 @@ class Player {
         this.isShooting = false;
         this.takingLifeLimit = 0.1;
         this.takingLife = this.takingLifeLimit;
+        this.damageLifeLimit = 0.1;
+        this.damageLife = this.takingLifeLimit;
+        this.life = 4;
+        this.maxLife = this.life;
+        this.isDead = false;
     }
     
     update(dt) {
+        
+        if (this.isDead) {
+            return;
+        }
+        
         this.takingLife += dt;
+        this.damageLife += dt;
         this.isShooting = false;
         this.shootTime += dt;
         if (this.shootTime >= this.shootTimeLimit && this.shootBool) {
@@ -151,6 +162,7 @@ class Player {
                 if (Math.abs(diff.x) <= size && Math.abs(diff.y) <= size) {
                     item.dispose = true;
                     this.takingLife = 0;
+                    this.life++;
                 }
             }
         }
@@ -158,6 +170,10 @@ class Player {
     
     isTakingLife() {
         return this.takingLife < this.takingLifeLimit;
+    }
+    
+    isDamageLife() {
+        return this.damageLife < this.damageLifeLimit;
     }
     
     render(context) {
@@ -201,6 +217,41 @@ class Player {
     
     openDoor(bool) {
         this.openDoorBool = bool;
+    }
+    
+    damage() {
+        this.life--;
+        this.damageLife = 0;
+        if (this.life <= 0) {
+            this.life = 0;
+            this.isDead = true;
+        }
+    }
+    
+    kill() {
+        this.life = 0;
+        this.damageLife = 0;
+        this.isDead = true;
+    }
+    
+    reset() {
+        this.velocity = new Vector(0, 0);
+        this.rotation = 0;
+        this.rotateLeftBool = false;
+        this.rotateRightBool = false;
+        this.forwardBool = false;
+        this.backwardBool = false;
+        this.openDoorBool = false;
+        this.shootBool = false;
+        this.shootTime = 0;
+        this.bullets = [];
+        this.playerDirection = new Vector(0, 0);
+        this.viewDirection = new Vector(0, 0);
+        this.isShooting = false;
+        this.takingLifeLimit = 0.1;
+        this.takingLife = this.takingLifeLimit;
+        this.life = this.maxLife;
+        this.isDead = false;
     }
 }
 
