@@ -23,6 +23,7 @@ class Map {
         this.player = player;
         this.exitVector = exitVector;
         this.exitTile = null;
+        this.isFinished = false;
     }
     
     load() {
@@ -61,7 +62,8 @@ class Map {
                 this.movingWalls.push(tile);
             }
             
-            if (this.exitVector.x === x && this.exitVector.y === newY) {
+            if (this.exitVector !== null && 
+                    this.exitVector.x === x && this.exitVector.y === newY) {
                 this.exitTile = tile;
             }
             
@@ -70,6 +72,10 @@ class Map {
     }
     
     reset() {
+        
+    }
+    
+    update() {
         
     }
 }

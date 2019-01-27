@@ -57,7 +57,8 @@ class Level1 extends Map {
         this.player.position.x = this.tileLength * 1 + this.tileLength / 2;
         this.player.position.y = this.tileLength * 1 + this.tileLength / 2;
         this.load();
-        this.loadItemsAndEnemies();    
+        this.loadItemsAndEnemies();
+        this.isFinished = false;
     }
     
     loadItemsAndEnemies() {
@@ -75,6 +76,17 @@ class Level1 extends Map {
         this.enemies.push(enemy);
         var enemy = new Enemy(4, 5, 60, this);
         this.enemies.push(enemy);
+    }
+    
+    update(dt) {
+        if (this.exitTile !== null) {
+            var x = Math.abs(this.exitTile.position.x - this.player.position.x);
+            var y = Math.abs(this.exitTile.position.y - this.player.position.y);
+            var size = this.player.length / 2 + this.exitTile.length / 2;
+            if (x <= size && y <= size) {
+                this.isFinished = true;
+            }
+        }
     }
 }
 

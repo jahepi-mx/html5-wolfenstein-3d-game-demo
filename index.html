@@ -16,8 +16,10 @@ and open the template in the editor.
         <script type="text/javascript" src="player.js"></script>
         <script type="text/javascript" src="tile.js"></script>
         <script type="text/javascript" src="movingwall.js"></script>
+        <script type="text/javascript" src="maps/levelmanager.js"></script>
         <script type="text/javascript" src="maps/map.js"></script>
         <script type="text/javascript" src="maps/level1.js"></script>
+        <script type="text/javascript" src="maps/level2.js"></script>
         <script type="text/javascript" src="sprite.js"></script>
         <script type="text/javascript" src="bullet.js"></script>
         <script type="text/javascript" src="priorityqueue.js"></script>
@@ -49,6 +51,8 @@ and open the template in the editor.
             var outputHeight = outputWidth / aspectRatio;
             var distToPlane = 0;
             var restart = false;
+            var isTheEnd = false;
+            var levelManager = new LevelManager();
             
             window.onload = function() {
                 canvas = document.getElementById("canvas");
@@ -60,9 +64,7 @@ and open the template in the editor.
                 canvasGame.width = outputWidth;
                 canvasGame.height = outputHeight;
                 player = new Player(0, 0, 10);
-                map = new Level1(player);
-                map.load();
-                
+                map = levelManager.load(player);          
                 raycaster = new Raycaster(gameResWidth);
                 raycasterRender = new RaycasterRender();
                 distToPlane = (outputWidth / 2) / Math.tan(raycaster.fov / 2);
@@ -88,6 +90,8 @@ and open the template in the editor.
             }
             
             function update(time) {
+                var dt = (time - prevTime) / 1000;
+                prevTime = time;
                 
                 if (restart) {
                     player.reset();
@@ -96,8 +100,12 @@ and open the template in the editor.
                     restart = false;
                 }
                 
-                var dt = (time - prevTime) / 1000;
-                prevTime = time;
+                map.update(dt);
+                if (map.isFinished) {
+                    levelManager.next();
+                    map = levelManager.load(player);
+                }
+                
                 var fps = parseInt(1 / dt);
                 context.clearRect(0, 0, previewWidth, previewHeight);
                 context.fillText(fps, previewWidth - 10, 10);
