@@ -166,6 +166,15 @@ class Player {
                 }
             }
         }
+        
+        if (map.exitTile !== null) {
+            var x = Math.abs(map.exitTile.position.x - this.position.x);
+            var y = Math.abs(map.exitTile.position.y - this.position.y);
+            var size = this.length / 2 + map.exitTile.length / 2;
+            if (x <= size && y <= size) {
+                //console.log("exit");
+            }
+        }
     }
     
     isTakingLife() {

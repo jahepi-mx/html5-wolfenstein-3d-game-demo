@@ -1,7 +1,7 @@
 class Level1 extends Map {
     
     constructor(player) {
-        super(player);
+        super(player, new Vector(10, 2));
         this.width = 32;
         this.height = 32;
         

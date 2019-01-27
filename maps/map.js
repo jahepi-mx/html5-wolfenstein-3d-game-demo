@@ -8,7 +8,7 @@ let MAP_SPRITE = 6;
 let MAP_MOVING_WALL = 7;
 
 class Map {
-    constructor(player) {
+    constructor(player, exitVector) {
         this.tileLength = 32;
         this.width = 0;
         this.height = 0;
@@ -21,6 +21,8 @@ class Map {
         this.items = [];
         this.map = [];
         this.player = player;
+        this.exitVector = exitVector;
+        this.exitTile = null;
     }
     
     load() {
@@ -57,6 +59,10 @@ class Map {
             if (value === MAP_MOVING_WALL) {
                 tile = new MovingWall(x, newY, value, this.tileLength);
                 this.movingWalls.push(tile);
+            }
+            
+            if (this.exitVector.x === x && this.exitVector.y === newY) {
+                this.exitTile = tile;
             }
             
             this.tiles[newY * this.width + x] = tile;
