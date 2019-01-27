@@ -1,7 +1,7 @@
 class Bullet {
     
     constructor(position, direction) {
-        this.moves = [[0, 0], [1, 0], [1, 1], [0, 1], [-1, 1], [-1, 0], [-1, -1], [0, -1], [1, -1]];
+        this.moves = [[0, 0], [-1, 0], [0, -1], [1, 0], [0, 1]];
         this.position = position;
         this.position.addThis(direction.mul(map.tileLength / 2));
         this.velocity = direction.mul(240);
