@@ -6,7 +6,7 @@ class Player {
         this.velocity = new Vector(0, 0);
         this.velocityLength = new Vector(85, 85).length();
         this.friction = 0.90;
-        this.rotation = 0;
+        this.rotation = Math.PI / 2;
         this.radianStep = Math.PI / 2;
         this.rotateLeftBool = false;
         this.rotateRightBool = false;
@@ -17,8 +17,8 @@ class Player {
         this.shootTime = 0;
         this.shootTimeLimit = 0.3;
         this.bullets = [];
-        this.playerDirection = new Vector(0, 0);
-        this.viewDirection = new Vector(0, 0);
+        this.playerDirection = new Vector(Math.cos(this.rotation), Math.sin(this.rotation));
+        this.viewDirection = new Vector(this.playerDirection.x, this.playerDirection.y);
         this.isShooting = false;
         this.takingLifeLimit = 0.1;
         this.takingLife = this.takingLifeLimit;

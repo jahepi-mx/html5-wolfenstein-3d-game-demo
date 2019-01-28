@@ -1,4 +1,4 @@
-class Enemy {
+class Dog {
     
     constructor(x, y, velocity, map) {
         this.map = map;
@@ -7,40 +7,42 @@ class Enemy {
         this.position = new Vector(map.tileLength * x + map.tileLength / 2, map.tileLength * y + map.tileLength / 2);
         this.velocity = new Vector(0, 0);
         this.velocityTmp = new Vector(velocity, velocity);
-        this.directionVectorFrom = new Vector(1, 0);
-        this.directionVectorTo = new Vector(0, 0);
+        this.directionVectorFrom = new Vector(1, 0).setAngle(Math.PI);
+        this.directionVectorTo = new Vector(this.directionVectorFrom.x, this.directionVectorFrom.y);
         this.searchTime = 0;
         this.searchTimeLimit = 2;
         this.path = [];
         this.pathTo = null;
         this.bullets = [];
-        this.shootTime = 0;
-        this.shootTimeLimit = 1;
+        this.attackTime = 0;
+        this.attackTimeLimit = 1;
         this.searchDoorTime = 0;
         this.searchDoorTimeLimit = 0.5;
         this.atlas = Atlas.getInstance();
         this.assets = Assets.getInstance();
         this.runAnimation = new Animation(4, 2);
-        this.deadAnimation = new Animation(5, 1);
+        this.deadAnimation = new Animation(4, 1);
         this.deadAnimation.stopAtSequenceNumber(1, null);
-        this.fireAnimation = new Animation(2, 2);
-        this.fireAnimation.stopAtSequenceNumber(3, null);
-        this.fireAnimation.stop();
+        this.attackAnimation = new Animation(3, 2);
+        this.attackAnimation.stopAtSequenceNumber(3, null);
+        this.attackAnimation.stop();
         this.life = 3;
         this.isDead = false;
         this.dispose = false;
+        this.isAware = false;
     }
     
     update(dt) {
         
         if (this.isDead) {
             this.deadAnimation.update(dt);
-            this.bullets = [];
             return;
         }
         
+        this.awareness();
+        
         this.searchTime += dt;
-        if (this.searchTime > this.searchTimeLimit) {
+        if (this.searchTime > this.searchTimeLimit && this.isAware) {
             this.path = [];
             this.pathfinding();
             this.searchTime = 0;
@@ -64,23 +66,25 @@ class Enemy {
         }
         
         var playerVector = player.position.sub(this.position);
+        this.attackTime += dt;
         if (playerVector.dot(playerVector) <= 4000) {
             this.path = [];
             this.pathTo = null;
             this.velocity.mulThis(0);
             this.directionVectorTo = playerVector;
-            this.shootTime += dt;
-            if (this.shootTime >= this.shootTimeLimit) {
-                this.bullets.push(new Bullet(this.position.clone(), new Vector(1, 0).setUnitAngle(this.directionVectorFrom.getAngle())));
-                this.shootTime = 0;
-                this.fireAnimation.reset();
+            
+            if (this.attackTime >= this.attackTimeLimit) {
+                this.attackTime = 0;
+                player.damage();
+                this.attackAnimation.reset();
             }
         } else {
-            this.shootTime = 0;
-            this.fireAnimation.stop();
+            this.attackAnimation.stop();
         }
         
-        this.calculateDirection(dt);
+        if (this.isAware) {
+            this.calculateDirection(dt);
+        }
         
         if (this.path.length > 0 && this.pathTo === null) {
             this.pathTo = this.path.pop();
@@ -116,39 +120,30 @@ class Enemy {
         }
         this.position.addThis(this.velocity.mul(dt));
         
-        for (var a = this.bullets.length - 1; a >= 0; a--) {
-            var bullet = this.bullets[a];
-            bullet.update(dt);
-            if (bullet.dispose) {
-                this.bullets.splice(a, 1);
-            }
-        }
-        
         if (this.velocity.x !== 0 || this.velocity.y !== 0) {
             this.runAnimation.update(dt);
         }
-        if (!this.fireAnimation.isStopped()) {
-            this.fireAnimation.update(dt);
+        if (!this.attackAnimation.isStopped()) {
+            this.attackAnimation.update(dt);
         }
-        
-        for (var a = this.bullets.length - 1; a >= 0; a--) {
-            var bullet = this.bullets[a];
-            bullet.update(dt);
-            if (bullet.dispose) {
-                this.bullets.splice(a, 1);
-            } else {
-                var diff = player.position.sub(bullet.position);
-                var size = player.length / 2 + this.length / 2;
-                if (!bullet.collided && Math.abs(diff.x) <= size && Math.abs(diff.y) <= size) {
-                    bullet.collided = true;
-                    player.damage();
-                }
-            }
+    }
+    
+    awareness() {
+        var xDiff = player.position.x - this.position.x;
+        var yDiff = player.position.y - this.position.y;
+        var dot = xDiff * xDiff + yDiff * yDiff;
+        if (dot >= 500000) {
+            this.isAware = false;
+        }
+        if (dot <= 450000 &&
+                player.viewDirection.dot(this.directionVectorFrom) < 0) {
+            this.isAware = true; 
         }
     }
     
     damage() {
         this.life--;
+        this.isAware = true;
         if (this.life <= 0) {
             this.life = 0;
             this.isDead = true;
@@ -280,21 +275,17 @@ class Enemy {
     }
     
     renderRaycaster(context, data) {
-        /*var halfY = outputHeight / 2;
-        context.fillStyle = "#ffe8e8";
-        var len = this.length  / data.z * distToPlane;
-        context.fillRect(data.x - len / 2, halfY - len / 2, len, len);*/
         var map = this.map;
         var image = "";
         var angle = this.getSpriteAngle();
         if (this.isDead) {
-            image = "SS_DEAD_" + (this.deadAnimation.getFrame() + 1);
-        } else if (!this.fireAnimation.isStopped()) {
-            image = "SS_FIRE_" + (this.fireAnimation.getFrame() + 1);
+            image = "DOG_DEAD_" + (this.deadAnimation.getFrame() + 1);
+        } else if (!this.attackAnimation.isStopped()) {
+            image = "DOG_ATTACK_" + (this.attackAnimation.getFrame() + 1);
         } else if (this.velocity.x !== 0 || this.velocity.y !== 0) {
-            image = "SS_RUN_" + angle + "_" + (this.runAnimation.getFrame() + 1);
+            image = "DOG_RUN_" + angle + "_" + (this.runAnimation.getFrame() + 1);
         } else {
-            image += "SS_" + angle;
+            image += "DOG_" + angle;
         }
         
         var halfY = outputHeight / 2;

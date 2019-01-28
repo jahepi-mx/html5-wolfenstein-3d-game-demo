@@ -70,11 +70,13 @@ class Level1 extends Map {
         this.items.push(new Life(19, 4, this.tileLength));
         this.items.push(new Life(19, 5, this.tileLength));
         
-        var enemy = new Enemy(8, 5, 20, this);
+        //var enemy = new Soldier(8, 5, 20, this);
+        //this.enemies.push(enemy);
+        //var enemy = new Soldier(8, 4, 40, this);
+        //this.enemies.push(enemy);
+        var enemy = new Soldier(4, 5, 60, this);
         this.enemies.push(enemy);
-        var enemy = new Enemy(8, 4, 40, this);
-        this.enemies.push(enemy);
-        var enemy = new Enemy(4, 5, 60, this);
+        var enemy = new Dog(8, 4, 60, this);
         this.enemies.push(enemy);
     }
     

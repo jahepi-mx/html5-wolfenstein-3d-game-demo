@@ -37,11 +37,11 @@ class Level2 extends Map {
     loadItemsAndEnemies() {
         this.items.push(new Life(3, 2, this.tileLength));
         
-        var enemy = new Enemy(28, 3, 100, this);
+        var enemy = new Soldier(28, 3, 100, this);
         this.enemies.push(enemy);
-        var enemy = new Enemy(24, 2, 120, this);
+        var enemy = new Soldier(24, 2, 120, this);
         this.enemies.push(enemy);
-        var enemy = new Enemy(26, 2, 140, this);
+        var enemy = new Soldier(26, 2, 140, this);
         this.enemies.push(enemy);
     }
     
