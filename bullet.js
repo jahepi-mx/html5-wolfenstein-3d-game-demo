@@ -3,11 +3,13 @@ class Bullet {
     constructor(position, direction) {
         this.moves = [[0, 0], [-1, 0], [0, -1], [1, 0], [0, 1]];
         this.position = position;
+        this.speed = 240;
         this.position.addThis(direction.mul(map.tileLength / 2));
-        this.velocity = direction.mul(240);
+        this.velocity = direction.mul(this.speed);
         this.length = 10;
         this.collided = false;
         this.dispose = false;
+        this.image = "new_bullet";
         this.atlas = Atlas.getInstance();
         this.assets = Assets.getInstance();
         this.fireExplosionAnimation = new Animation(2, 5);
@@ -50,13 +52,8 @@ class Bullet {
     }
     
     renderRaycaster(context, data) {
-        /*var halfY = outputHeight / 2;
-        context.fillStyle = "#ffe8e8";
-        var len = this.length / data.z * distToPlane;
-        context.fillRect(data.x - len / 2, halfY - len / 2, len, len);
-        */
         var halfY = outputHeight / 2;
-        var frame = "new_bullet";
+        var frame = this.image;
         var len = 0;
         if (this.collided) {
             len = this.length * 3 / data.z * distToPlane;

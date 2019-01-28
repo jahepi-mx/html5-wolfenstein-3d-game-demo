@@ -285,7 +285,7 @@ class Dog {
         } else if (this.velocity.x !== 0 || this.velocity.y !== 0) {
             image = "DOG_RUN_" + angle + "_" + (this.runAnimation.getFrame() + 1);
         } else {
-            image += "DOG_" + angle;
+            image = "DOG_" + angle;
         }
         
         var halfY = outputHeight / 2;

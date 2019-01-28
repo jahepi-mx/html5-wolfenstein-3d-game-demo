@@ -24,7 +24,7 @@ class Player {
         this.takingLife = this.takingLifeLimit;
         this.damageLifeLimit = 0.1;
         this.damageLife = this.takingLifeLimit;
-        this.life = 4;
+        this.life = 400;
         this.maxLife = this.life;
         this.isDead = false;
     }

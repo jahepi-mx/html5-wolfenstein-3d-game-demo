@@ -78,6 +78,8 @@ class Level1 extends Map {
         this.enemies.push(enemy);
         var enemy = new Dog(8, 4, 60, this);
         this.enemies.push(enemy);
+        var enemy = new Boss(1, 4, 60, this);
+        this.enemies.push(enemy);
     }
     
     update(dt) {
