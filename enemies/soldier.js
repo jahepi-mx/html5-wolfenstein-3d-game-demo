@@ -75,7 +75,7 @@ class Soldier {
             this.directionVectorTo = playerVector;
             
             if (this.shootTime >= this.shootTimeLimit) {
-                this.bullets.push(new Bullet(this.position.clone(), new Vector(1, 0).setUnitAngle(this.directionVectorFrom.getAngle())));
+                this.bullets.push(new Bullet(this.position.clone(), new Vector(this.directionVectorFrom.x, this.directionVectorFrom.y)));
                 this.shootTime = 0;
                 this.fireAnimation.reset();
             }
