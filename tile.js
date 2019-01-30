@@ -11,7 +11,7 @@ class Tile {
         this.atlas = Atlas.getInstance();
         this.assets = Assets.getInstance();
         this.colImage = "tile22";
-        this.rowImage = "tile22";
+        this.rowImage = "tile22_goya";
     }
     
     update(dt) {

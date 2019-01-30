@@ -18,6 +18,8 @@ class Soldier {
         this.shootTimeLimit = 1;
         this.searchDoorTime = 0;
         this.searchDoorTimeLimit = 0.5;
+        this.damageTimeLimit = 0.2;
+        this.damageTime = this.damageTimeLimit;
         this.atlas = Atlas.getInstance();
         this.assets = Assets.getInstance();
         this.runAnimation = new Animation(4, 2);
@@ -26,7 +28,7 @@ class Soldier {
         this.fireAnimation = new Animation(2, 2);
         this.fireAnimation.stopAtSequenceNumber(3, null);
         this.fireAnimation.stop();
-        this.life = 3;
+        this.life = 10;
         this.isDead = false;
         this.dispose = false;
         this.isAware = false;
@@ -48,7 +50,7 @@ class Soldier {
             this.pathfinding();
             this.searchTime = 0;
         }
-        
+        this.damageTime += dt;
         this.searchDoorTime += dt;
         if (this.searchDoorTime > this.searchDoorTimeLimit) {
             var currX = parseInt(this.position.x / this.map.tileLength);
@@ -159,6 +161,7 @@ class Soldier {
     
     damage() {
         this.life--;
+        this.damageTime = 0;
         this.isAware = true;
         if (this.life <= 0) {
             this.life = 0;
@@ -293,15 +296,16 @@ class Soldier {
     renderRaycaster(context, data) {
         var map = this.map;
         var image = "";
+        var isDamaged = this.damageTime < this.damageTimeLimit;
         var angle = this.getSpriteAngle();
         if (this.isDead) {
             image = "SS_DEAD_" + (this.deadAnimation.getFrame() + 1);
         } else if (!this.fireAnimation.isStopped()) {
-            image = "SS_FIRE_" + (this.fireAnimation.getFrame() + 1);
+            image = (isDamaged ? "RED_SS_FIRE_" : "SS_FIRE_") + (this.fireAnimation.getFrame() + 1);
         } else if (this.velocity.x !== 0 || this.velocity.y !== 0) {
-            image = "SS_RUN_" + angle + "_" + (this.runAnimation.getFrame() + 1);
+            image = (isDamaged ? "RED_SS_RUN_" : "SS_RUN_") + angle + "_" + (this.runAnimation.getFrame() + 1);
         } else {
-            image = "SS_" + angle;
+            image = (isDamaged ? "RED_SS_" : "SS_") + angle;
         }
         
         var halfY = outputHeight / 2;

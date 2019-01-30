@@ -16,6 +16,8 @@ class Boss {
         this.shootTimeLimit = 2;
         this.searchDoorTime = 0;
         this.searchDoorTimeLimit = 0.5;
+        this.damageTimeLimit = 0.2;
+        this.damageTime = this.damageTimeLimit;
         this.atlas = Atlas.getInstance();
         this.assets = Assets.getInstance();
         this.runAnimation = new Animation(5, 2);
@@ -24,7 +26,7 @@ class Boss {
         this.fireAnimation = new Animation(3, 2);
         this.fireAnimation.stopAtSequenceNumber(3, null);
         this.fireAnimation.stop();
-        this.life = 3;
+        this.life = 10;
         this.isDead = false;
         this.dispose = false;
         this.randomShootTime = 0;
@@ -46,7 +48,7 @@ class Boss {
             this.pathfinding();
             this.searchTime = 0;
         }
-        
+        this.damageTime += dt;
         this.searchDoorTime += dt;
         if (this.searchDoorTime > this.searchDoorTimeLimit) {
             var currX = parseInt(this.position.x / this.map.tileLength);
@@ -149,6 +151,7 @@ class Boss {
     
     damage() {
         this.life--;
+        this.damageTime = 0;
         if (this.life <= 0) {
             this.life = 0;
             this.isDead = true;
@@ -223,14 +226,15 @@ class Boss {
     renderRaycaster(context, data) {
         var map = this.map;
         var image = "";
+        var isDamaged = this.damageTime < this.damageTimeLimit;
         if (this.isDead) {
             image = "BOSS_DEAD_" + (this.deadAnimation.getFrame() + 1);
         } else if (!this.fireAnimation.isStopped()) {
-            image = "BOSS_ATTACK_" + (this.fireAnimation.getFrame() + 1);
+            image = (isDamaged ? "RED_BOSS_ATTACK_" : "BOSS_ATTACK_") + (this.fireAnimation.getFrame() + 1);
         } else if (this.velocity.x !== 0 || this.velocity.y !== 0) {
-            image = "BOSS_RUN_" + (this.runAnimation.getFrame() + 1);
+            image = (isDamaged ? "RED_BOSS_RUN_" : "BOSS_RUN_") + (this.runAnimation.getFrame() + 1);
         } else {
-            image = "BOSS";
+            image = (isDamaged ? "RED_BOSS" : "BOSS");
         }
         
         var halfY = outputHeight / 2;

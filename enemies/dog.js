@@ -18,6 +18,8 @@ class Dog {
         this.attackTimeLimit = 1;
         this.searchDoorTime = 0;
         this.searchDoorTimeLimit = 0.5;
+        this.damageTimeLimit = 0.2;
+        this.damageTime = this.damageTimeLimit;
         this.atlas = Atlas.getInstance();
         this.assets = Assets.getInstance();
         this.runAnimation = new Animation(4, 2);
@@ -26,7 +28,7 @@ class Dog {
         this.attackAnimation = new Animation(3, 2);
         this.attackAnimation.stopAtSequenceNumber(3, null);
         this.attackAnimation.stop();
-        this.life = 3;
+        this.life = 10;
         this.isDead = false;
         this.dispose = false;
         this.isAware = false;
@@ -47,7 +49,7 @@ class Dog {
             this.pathfinding();
             this.searchTime = 0;
         }
-        
+        this.damageTime += dt;
         this.searchDoorTime += dt;
         if (this.searchDoorTime > this.searchDoorTimeLimit) {
             var currX = parseInt(this.position.x / this.map.tileLength);
@@ -143,6 +145,7 @@ class Dog {
     
     damage() {
         this.life--;
+        this.damageTime = 0;
         this.isAware = true;
         if (this.life <= 0) {
             this.life = 0;
@@ -277,15 +280,16 @@ class Dog {
     renderRaycaster(context, data) {
         var map = this.map;
         var image = "";
+        var isDamaged = this.damageTime < this.damageTimeLimit;
         var angle = this.getSpriteAngle();
         if (this.isDead) {
             image = "DOG_DEAD_" + (this.deadAnimation.getFrame() + 1);
         } else if (!this.attackAnimation.isStopped()) {
-            image = "DOG_ATTACK_" + (this.attackAnimation.getFrame() + 1);
+            image = (isDamaged ? "RED_DOG_ATTACK_" : "DOG_ATTACK_") + (this.attackAnimation.getFrame() + 1);
         } else if (this.velocity.x !== 0 || this.velocity.y !== 0) {
-            image = "DOG_RUN_" + angle + "_" + (this.runAnimation.getFrame() + 1);
+            image = (isDamaged ? "RED_DOG_RUN_" : "DOG_RUN_") + angle + "_" + (this.runAnimation.getFrame() + 1);
         } else {
-            image = "DOG_" + angle;
+            image = (isDamaged ? "RED_DOG_" : "DOG_") + angle;
         }
         
         var halfY = outputHeight / 2;
