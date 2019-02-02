@@ -62,6 +62,7 @@ and open the template in the editor.
                 canvas.width = previewWidth;
                 canvas.height = previewHeight;
                 canvasGame = document.getElementById("game");
+                canvasGame.style.cursor = "none";
                 contextGame = canvasGame.getContext("2d");
                 canvasGame.width = outputWidth;
                 canvasGame.height = outputHeight;
@@ -85,6 +86,8 @@ and open the template in the editor.
             function onLoadAtlas() {
                 document.onkeydown = onKeyDown;
                 document.onkeyup = onKeyUp;
+                canvasGame.onmousedown = onMouseDown;
+                canvasGame.onmouseup = onMouseUp;
                 requestAnimationFrame(update);
             }
             
@@ -94,6 +97,12 @@ and open the template in the editor.
             function update(time) {
                 var dt = (time - prevTime) / 1000;
                 prevTime = time;
+                var fps = parseInt(1 / dt);
+                
+                if (fps < 4) {
+                    requestAnimationFrame(update);
+                    return;
+                }
                 
                 if (restart) {
                     player.reset();
@@ -108,7 +117,6 @@ and open the template in the editor.
                     map = levelManager.load(player);
                 }
                 
-                var fps = parseInt(1 / dt);
                 context.clearRect(0, 0, previewWidth, previewHeight);
                 context.fillText(fps, previewWidth - 10, 10);
                 for (let tile of map.tiles) {
@@ -154,6 +162,14 @@ and open the template in the editor.
                 if (evt.keyCode === 83) player.backward(false);
                 if (evt.keyCode === 32) player.shoot(false);
                 if (evt.keyCode === 69) player.openDoor(false);
+            }
+            
+            function onMouseDown(evt) {
+                player.shoot(true);
+            }
+            
+            function onMouseUp(evt) {
+                player.shoot(false);
             }
         </script>
     </head>
