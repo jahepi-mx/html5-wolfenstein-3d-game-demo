@@ -10,8 +10,8 @@ class Tile {
         this.type = type;
         this.atlas = Atlas.getInstance();
         this.assets = Assets.getInstance();
-        this.colImage = "tile22";
-        this.rowImage = "tile22_goya";
+        this.colImage = "tile" + type;
+        this.rowImage = "tile" + type;
     }
     
     update(dt) {

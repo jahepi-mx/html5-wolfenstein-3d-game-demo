@@ -1,11 +1,15 @@
 class MovingWall extends Tile {
     
-    constructor(x, y, type, length) {
+    constructor(x, y, type, length, velocity, vertical, numberOfBloksToMove) {
         super(x, y, type, length, false);
-        this.end = new Vector(this.position.x, this.position.y + this.length);
+        if (vertical) {
+            this.end = new Vector(this.position.x, this.position.y + this.length * numberOfBloksToMove);
+        } else {
+            this.end = new Vector(this.position.x + this.length * numberOfBloksToMove, this.position.y);
+        }
         this.start = this.position.clone();
         this.to = this.end.clone();
-        this.velocity = new Vector(10, 10);
+        this.velocity = new Vector(velocity, velocity);
         this.colImage = "invisible";
         this.rowImage = "invisible";
         this.animation = new Animation(13, 1);
@@ -44,7 +48,7 @@ class MovingWall extends Tile {
             this.position.y -= this.velocity.y * dt;
         }
         
-        if (sub.dot(sub) <= 2) {
+        if (sub.dot(sub) <= 10) {
             var tmp = this.start.sub(this.to);
             if (tmp.dot(tmp) > 2) {
                 this.to = this.start.clone();

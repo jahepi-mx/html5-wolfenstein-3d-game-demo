@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<tileset name="raycasting" tilewidth="64" tileheight="64" tilecount="12" columns="0">
+<tileset name="raycasting" tilewidth="64" tileheight="64" tilecount="24" columns="0">
  <grid orientation="orthogonal" width="1" height="1"/>
  <tile id="0">
   <properties>
@@ -51,5 +51,41 @@
  </tile>
  <tile id="11">
   <image width="32" height="32" source="tileset_images/tile22.png"/>
+ </tile>
+ <tile id="12">
+  <image width="32" height="32" source="tileset_images/tile13.png"/>
+ </tile>
+ <tile id="13">
+  <image width="32" height="32" source="tileset_images/tile14.png"/>
+ </tile>
+ <tile id="14">
+  <image width="32" height="32" source="tileset_images/tile15.png"/>
+ </tile>
+ <tile id="15">
+  <image width="32" height="32" source="tileset_images/tile16.png"/>
+ </tile>
+ <tile id="16">
+  <image width="32" height="32" source="tileset_images/tile17.png"/>
+ </tile>
+ <tile id="17">
+  <image width="32" height="32" source="tileset_images/tile18.png"/>
+ </tile>
+ <tile id="18">
+  <image width="32" height="32" source="tileset_images/tile19.png"/>
+ </tile>
+ <tile id="19">
+  <image width="32" height="32" source="tileset_images/tile20.png"/>
+ </tile>
+ <tile id="20">
+  <image width="32" height="32" source="../sprites/separated_sprites/tile21.png"/>
+ </tile>
+ <tile id="21">
+  <image width="32" height="32" source="../sprites/separated_sprites/tile22.png"/>
+ </tile>
+ <tile id="22">
+  <image width="32" height="32" source="../sprites/separated_sprites/tile23.png"/>
+ </tile>
+ <tile id="23">
+  <image width="32" height="32" source="../sprites/separated_sprites/tile24.png"/>
  </tile>
 </tileset>

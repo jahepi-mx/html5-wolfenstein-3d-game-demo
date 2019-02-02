@@ -62,17 +62,19 @@ class Map {
                 tile = new Tile(x, newY, value, this.tileLength, true);
                 this.items.push(new Life(x, newY, this.tileLength));
             }
-            if (value === MAP_WALL || value === MAP_EMPTY
+            if (value >= MAP_WALL || value === MAP_EMPTY
                     || value === MAP_WALL_DOOR_COL || value === MAP_WALL_DOOR_ROW) {
                 tile = new Tile(x, newY, value, this.tileLength, value === MAP_EMPTY);
-                if (value === MAP_WALL || value === MAP_WALL_DOOR_COL || value === MAP_WALL_DOOR_ROW) {
+                if (value >= MAP_WALL || value === MAP_WALL_DOOR_COL || value === MAP_WALL_DOOR_ROW) {
                     this.walls[newY * this.width + x] = tile;
                 }
                 if (value === MAP_WALL_DOOR_COL) {
-                    tile.rowImage = "tile21";
+                    tile.rowImage = "tile8";
+                    tile.colImage = "tile12";
                 }
                 if (value === MAP_WALL_DOOR_ROW) {
-                    tile.colImage = "tile21";
+                    tile.colImage = "tile8";
+                    tile.rowImage = "tile12";
                 }
             }
             if (value === MAP_DOOR_ROW || value === MAP_DOOR_COL) {
@@ -85,7 +87,8 @@ class Map {
             }
             
             if (value === MAP_MOVING_WALL) {
-                tile = new MovingWall(x, newY, value, this.tileLength);
+                var param = this.enemyParams[newY * 32 + x];
+                tile = new MovingWall(x, newY, value, this.tileLength, param.velocity, param.vertical, param.numberOfBloksToMove);
                 this.movingWalls.push(tile);
             }
             

@@ -20,6 +20,7 @@ and open the template in the editor.
         <script type="text/javascript" src="maps/map.js"></script>
         <script type="text/javascript" src="maps/level1.js"></script>
         <script type="text/javascript" src="maps/level2.js"></script>
+        <script type="text/javascript" src="maps/level3.js"></script>
         <script type="text/javascript" src="sprite.js"></script>
         <script type="text/javascript" src="bullet.js"></script>
         <script type="text/javascript" src="priorityqueue.js"></script>
@@ -126,7 +127,7 @@ and open the template in the editor.
                 }
                 
                 map.update(dt);
-                if (map.isFinished) {
+                if (map.isFinished && !levelManager.isLast()) {
                     levelManager.next();
                     map = levelManager.load(player);
                 }
@@ -152,6 +153,9 @@ and open the template in the editor.
                 raycasterRender.data = data;
                 raycasterRender.render(contextGame, dt, fps);
                 
+                if (map.isFinished && levelManager.isLast()) {
+                    contextGame.fillText("WELL DONE!, THE GAME IS OVER ...", canvasGame.width / 2, canvasGame.height / 2);
+                }
                 requestAnimationFrame(update);
             }
             

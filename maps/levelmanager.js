@@ -18,7 +18,15 @@ class LevelManager {
             map = new Level2(player);
             map.load();
         }
+        if (this.currentLevel === 2) {
+            map = new Level3(player);
+            map.load();
+        }
         return map;
+    }
+    
+    isLast() {
+        return this.currentLevel >= 2;
     }
 }
 
