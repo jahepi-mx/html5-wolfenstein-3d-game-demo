@@ -1,13 +1,13 @@
 class Soldier {
     
-    constructor(x, y, velocity, map) {
+    constructor(x, y, velocity, map, dirRadians, shootTimeLimit, shootDistance, unawarenessDistance, awarenessDistance) {
         this.map = map;
         this.length = 25;
         this.moves = [[-1, 0], [0, -1], [1, 0], [0, 1]];
         this.position = new Vector(map.tileLength * x + map.tileLength / 2, map.tileLength * y + map.tileLength / 2);
         this.velocity = new Vector(0, 0);
         this.velocityTmp = new Vector(velocity, velocity);
-        this.directionVectorFrom = new Vector(1, 0).setAngle(Math.PI);
+        this.directionVectorFrom = new Vector(1, 0).setAngle(dirRadians);
         this.directionVectorTo = new Vector(this.directionVectorFrom.x, this.directionVectorFrom.y);
         this.searchTime = 0;
         this.searchTimeLimit = 2;
@@ -15,7 +15,7 @@ class Soldier {
         this.pathTo = null;
         this.bullets = [];
         this.shootTime = 0;
-        this.shootTimeLimit = 1;
+        this.shootTimeLimit = shootTimeLimit === 0 ? 1 : shootTimeLimit;
         this.searchDoorTime = 0;
         this.searchDoorTimeLimit = 0.5;
         this.damageTimeLimit = 0.2;
@@ -32,6 +32,9 @@ class Soldier {
         this.isDead = false;
         this.dispose = false;
         this.isAware = false;
+        this.shootDistance = shootDistance === 0 ? 20000 : shootDistance;
+        this.unawarenessDistance = unawarenessDistance === 0 ? 200000 : unawarenessDistance;
+        this.awarenessDistance = awarenessDistance === 0 ? 150000 : awarenessDistance;
     }
     
     update(dt) {
@@ -70,7 +73,7 @@ class Soldier {
         
         var playerVector = player.position.sub(this.position);
         this.shootTime += dt;
-        if (playerVector.dot(playerVector) <= 20000) {
+        if (playerVector.dot(playerVector) <= this.shootDistance && this.isAware) {
             this.path = [];
             this.pathTo = null;
             this.velocity.mulThis(0);
@@ -85,9 +88,7 @@ class Soldier {
             this.fireAnimation.stop();
         }
         
-        if (this.isAware) {
-            this.calculateDirection(dt);
-        }
+        this.calculateDirection(dt);
         
         if (this.path.length > 0 && this.pathTo === null) {
             this.pathTo = this.path.pop();
@@ -150,11 +151,11 @@ class Soldier {
         var xDiff = player.position.x - this.position.x;
         var yDiff = player.position.y - this.position.y;
         var dot = xDiff * xDiff + yDiff * yDiff;
-        if (dot >= 500000) {
+        if (dot >= this.unawarenessDistance) {
             this.isAware = false;
         }
-        if (dot <= 450000 &&
-                player.viewDirection.dot(this.directionVectorFrom) < 0) {
+        if (dot <= this.awarenessDistance &&
+                player.position.sub(this.position).dot(this.directionVectorFrom) >= 0) {
             this.isAware = true; 
         }
     }

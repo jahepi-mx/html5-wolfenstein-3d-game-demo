@@ -1,13 +1,13 @@
 class Dog {
     
-    constructor(x, y, velocity, map) {
+    constructor(x, y, velocity, map, dirRadians) {
         this.map = map;
         this.length = 25;
         this.moves = [[-1, 0], [0, -1], [1, 0], [0, 1]];
         this.position = new Vector(map.tileLength * x + map.tileLength / 2, map.tileLength * y + map.tileLength / 2);
         this.velocity = new Vector(0, 0);
         this.velocityTmp = new Vector(velocity, velocity);
-        this.directionVectorFrom = new Vector(1, 0).setAngle(Math.PI);
+        this.directionVectorFrom = new Vector(1, 0).setAngle(dirRadians);
         this.directionVectorTo = new Vector(this.directionVectorFrom.x, this.directionVectorFrom.y);
         this.searchTime = 0;
         this.searchTimeLimit = 2;
@@ -69,7 +69,7 @@ class Dog {
         
         var playerVector = player.position.sub(this.position);
         this.attackTime += dt;
-        if (playerVector.dot(playerVector) <= 4000) {
+        if (playerVector.dot(playerVector) <= 4000 && this.isAware) {
             this.path = [];
             this.pathTo = null;
             this.velocity.mulThis(0);
@@ -84,9 +84,7 @@ class Dog {
             this.attackAnimation.stop();
         }
         
-        if (this.isAware) {
-            this.calculateDirection(dt);
-        }
+        this.calculateDirection(dt);
         
         if (this.path.length > 0 && this.pathTo === null) {
             this.pathTo = this.path.pop();
@@ -134,11 +132,11 @@ class Dog {
         var xDiff = player.position.x - this.position.x;
         var yDiff = player.position.y - this.position.y;
         var dot = xDiff * xDiff + yDiff * yDiff;
-        if (dot >= 500000) {
+        if (dot >= 350000) {
             this.isAware = false;
         }
-        if (dot <= 450000 &&
-                player.viewDirection.dot(this.directionVectorFrom) < 0) {
+        if (dot <= 300000 &&
+                player.position.sub(this.position).dot(this.directionVectorFrom) >= 0) {
             this.isAware = true; 
         }
     }

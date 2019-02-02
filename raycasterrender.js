@@ -73,7 +73,7 @@ class RaycasterRender {
         if (player.isDead) {
             context.fillStyle = "#fff";
             context.font = "50px joystix";
-            context.fillText("YOU DIED. PRESS R TO RESTART LEVEL", outputWidth / 2 - 290, outputHeight / 2);
+            context.fillText("YOU DIED. PRESS R TO RESTART LEVEL", outputWidth / 2, outputHeight / 2);
         }
     }
     

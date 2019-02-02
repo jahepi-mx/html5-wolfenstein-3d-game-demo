@@ -80,7 +80,14 @@ and open the template in the editor.
                 atlas.loadAll(onLoadAtlas, onDownloadAtlas);
             }
             
-            function onDownloadAssets() {  
+            function onDownloadAssets() {
+                contextGame.clearRect(0, 0, canvasGame.width, canvasGame.height);
+                contextGame.imageSmoothingEnabled = false;
+                var percentage = Math.floor(Assets.getInstance().getLoadedRatio() * 100);
+                contextGame.font = Math.floor(canvasGame.height * .14) + "px joystix";;
+                contextGame.fillStyle = "#fff";
+                contextGame.textAlign = "center";
+                contextGame.fillText("Downloading Assets " + percentage + "%", canvasGame.width / 2, canvasGame.height * 0.3);
             }
             
             function onLoadAtlas() {
@@ -91,7 +98,14 @@ and open the template in the editor.
                 requestAnimationFrame(update);
             }
             
-            function onDownloadAtlas() {  
+            function onDownloadAtlas() {
+                contextGame.clearRect(0, 0, canvasGame.width, canvasGame.height);
+                contextGame.imageSmoothingEnabled = false;
+                var percentage = Math.floor(Atlas.getInstance().getLoadedRatio() * 100);
+                contextGame.font = Math.floor(canvasGame.height * .14) + "px joystix";;
+                contextGame.fillStyle = "#fff";
+                contextGame.textAlign = "center";
+                contextGame.fillText("Downloading Atlas " + percentage + "%", canvasGame.width / 2, canvasGame.height * 0.3);
             }
             
             function update(time) {
@@ -123,10 +137,10 @@ and open the template in the editor.
                     tile.update(dt);
                     //tile.render(context);
                 }
-                for (let sprite of map.sprites) {
-                    sprite.update(dt);
+                //for (let sprite of map.sprites) {
+                    //sprite.update(dt);
                     //sprite.render(context);
-                }
+                //}
                 for (let enemy of map.enemies) {
                     enemy.update(dt);
                     //enemy.render(context);

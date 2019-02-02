@@ -1,11 +1,15 @@
-let MAP_EMPTY = 0;
-let MAP_WALL = 1;
-let MAP_DOOR_COL = 2;
-let MAP_DOOR_ROW = 3;
-let MAP_WALL_DOOR_COL = 4;
-let MAP_WALL_DOOR_ROW = 5;
-let MAP_SPRITE = 6;
-let MAP_MOVING_WALL = 7;
+let MAP_EMPTY = 1;
+let MAP_WALL = 12;
+let MAP_DOOR_COL = 9;
+let MAP_DOOR_ROW = 11;
+let MAP_WALL_DOOR_COL = 8;
+let MAP_WALL_DOOR_ROW = 10;
+let MAP_SPRITE = 2;
+let MAP_MOVING_WALL = 3;
+let MAP_SOLDIER = 5;
+let MAP_DOG = 6;
+let MAP_BOSS= 7;
+let MAP_LIFE = 4;
 
 class Map {
     constructor(player, exitVector) {
@@ -24,6 +28,7 @@ class Map {
         this.exitVector = exitVector;
         this.exitTile = null;
         this.isFinished = false;
+        this.enemyParams = [];
     }
     
     load() {
@@ -35,9 +40,31 @@ class Map {
             var newY = (this.height - 1) - y;
             
             var tile = null;
+            if (value === MAP_SOLDIER) {
+                tile = new Tile(x, newY, value, this.tileLength, true);
+                var param = this.enemyParams[newY * 32 + x];
+                var enemy = new Soldier(x, newY, param.velocity, this, param.dirRadians, param.shootTimeLimit, param.shootDistance, param.unawarenessDistance, param.awarenessDistance);
+                this.enemies.push(enemy);
+            }
+            if (value === MAP_DOG) {
+                tile = new Tile(x, newY, value, this.tileLength, true);
+                var param = this.enemyParams[newY * 32 + x];
+                var enemy = new Dog(x, newY, param.velocity, this, param.dirRadians);
+                this.enemies.push(enemy);
+            }
+            if (value === MAP_BOSS) {
+                tile = new Tile(x, newY, value, this.tileLength, true);
+                var param = this.enemyParams[newY * 32 + x];
+                var enemy = new Boss(x, newY, param.velocity, this, param.shootTimeLimit);
+                this.enemies.push(enemy);
+            }
+            if (value === MAP_LIFE) {
+                tile = new Tile(x, newY, value, this.tileLength, true);
+                this.items.push(new Life(x, newY, this.tileLength));
+            }
             if (value === MAP_WALL || value === MAP_EMPTY
                     || value === MAP_WALL_DOOR_COL || value === MAP_WALL_DOOR_ROW) {
-                tile = new Tile(x, newY, value, this.tileLength, value === 0);
+                tile = new Tile(x, newY, value, this.tileLength, value === MAP_EMPTY);
                 if (value === MAP_WALL || value === MAP_WALL_DOOR_COL || value === MAP_WALL_DOOR_ROW) {
                     this.walls[newY * this.width + x] = tile;
                 }

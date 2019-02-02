@@ -1,6 +1,6 @@
 class Boss {
     
-    constructor(x, y, velocity, map) {
+    constructor(x, y, velocity, map, shootTimeLimit) {
         this.map = map;
         this.length = 25;
         this.moves = [[-1, 0], [0, -1], [1, 0], [0, 1]];
@@ -13,7 +13,7 @@ class Boss {
         this.pathTo = null;
         this.bullets = [];
         this.shootTime = 0;
-        this.shootTimeLimit = 2;
+        this.shootTimeLimit = shootTimeLimit === 0 ? 2 : shootTimeLimit;
         this.searchDoorTime = 0;
         this.searchDoorTimeLimit = 0.5;
         this.damageTimeLimit = 0.2;
