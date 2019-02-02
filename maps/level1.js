@@ -13,8 +13,8 @@ class Level1 extends Map {
         this.enemyParams[12 * this.width + 5] = {velocity: 100, dirRadians: Math.PI / 2, shootTimeLimit: 0.2, shootDistance: 50000, unawarenessDistance: 0, awarenessDistance: 0};
         this.enemyParams[15 * this.width + 3] = {velocity: 200, shootTimeLimit: 0.2};
         this.enemyParams[18 * this.width + 7] = {velocity: 100, dirRadians: Math.PI / 2};
-        this.enemyParams[7 * this.width + 1] = {velocity: 50, vertical: false, numberOfBloksToMove: 3};
-        this.enemyParams[1 * this.width + 5] = {velocity: 50, vertical: true, numberOfBloksToMove: 6};
+        this.enemyParams[7 * this.width + 1] = {velocity: 50, vertical: false, numberOfBlocksToMove: 3};
+        this.enemyParams[1 * this.width + 5] = {velocity: 50, vertical: true, numberOfBlocksToMove: 6};
     }
     
     reset() {

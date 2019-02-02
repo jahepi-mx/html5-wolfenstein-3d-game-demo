@@ -1,11 +1,11 @@
 class MovingWall extends Tile {
     
-    constructor(x, y, type, length, velocity, vertical, numberOfBloksToMove) {
+    constructor(x, y, type, length, velocity, vertical, numberOfBlocksToMove) {
         super(x, y, type, length, false);
         if (vertical) {
-            this.end = new Vector(this.position.x, this.position.y + this.length * numberOfBloksToMove);
+            this.end = new Vector(this.position.x, this.position.y + this.length * numberOfBlocksToMove);
         } else {
-            this.end = new Vector(this.position.x + this.length * numberOfBloksToMove, this.position.y);
+            this.end = new Vector(this.position.x + this.length * numberOfBlocksToMove, this.position.y);
         }
         this.start = this.position.clone();
         this.to = this.end.clone();

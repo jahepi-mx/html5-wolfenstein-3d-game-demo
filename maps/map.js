@@ -88,7 +88,7 @@ class Map {
             
             if (value === MAP_MOVING_WALL) {
                 var param = this.enemyParams[newY * 32 + x];
-                tile = new MovingWall(x, newY, value, this.tileLength, param.velocity, param.vertical, param.numberOfBloksToMove);
+                tile = new MovingWall(x, newY, value, this.tileLength, param.velocity, param.vertical, param.numberOfBlocksToMove);
                 this.movingWalls.push(tile);
             }
             
