@@ -27,6 +27,7 @@ class Player {
         this.life = 40;
         this.maxLife = this.life;
         this.isDead = false;
+        this.assets = Assets.getInstance();
     }
     
     update(dt) {
@@ -40,6 +41,7 @@ class Player {
         this.isShooting = false;
         this.shootTime += dt;
         if (this.shootTime >= this.shootTimeLimit && this.shootBool) {
+            this.assets.playAudio(this.assets.gunshot, false, 0.1);
             this.bullets.push(new Bullet(this.position.clone(), new Vector(this.viewDirection.x, this.viewDirection.y)));
             this.shootTime = 0;
             this.isShooting = true;

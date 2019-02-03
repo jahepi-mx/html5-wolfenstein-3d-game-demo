@@ -10,8 +10,8 @@ class Assets {
         this.srcs = ["assets/sprites/sprites.png"];
         this.keys = ["spritesAtlas"];
         this.audio = {};
-        this.audio.srcs = [];
-        this.audio.keys = [];
+        this.audio.srcs = ["assets/audios/gunshot.wav"];
+        this.audio.keys = ["gunshot"];
         window.AudioContext = window.AudioContext || window.webkitAudioContext;
         this.audioContext = new AudioContext();
     }
