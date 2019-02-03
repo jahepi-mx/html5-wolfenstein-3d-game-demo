@@ -80,7 +80,7 @@ class Soldier {
             this.directionVectorTo = playerVector;
             
             if (this.shootTime >= this.shootTimeLimit) {
-                var volume = (1 - (playerVector.dot(playerVector) / 2000000)) * 0.05;
+                var volume = (1 - (playerVector.dot(playerVector) / 2000000)) * 0.03;
                 this.assets.playAudio(this.assets.gunshot, false, volume);
                 this.bullets.push(new Bullet(this.position.clone(), new Vector(this.directionVectorFrom.x, this.directionVectorFrom.y)));
                 this.shootTime = 0;
@@ -169,6 +169,7 @@ class Soldier {
         if (this.life <= 0) {
             this.life = 0;
             this.isDead = true;
+            this.assets.playAudio(this.assets.soldierdie, false, 0.2);
         }
     }
     

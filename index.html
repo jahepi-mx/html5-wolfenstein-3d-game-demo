@@ -56,6 +56,7 @@ and open the template in the editor.
             var restart = false;
             var isTheEnd = false;
             var levelManager = new LevelManager();
+            var music = null;
             
             window.onload = function() {
                 canvas = document.getElementById("canvas");
@@ -67,8 +68,7 @@ and open the template in the editor.
                 contextGame = canvasGame.getContext("2d");
                 canvasGame.width = outputWidth;
                 canvasGame.height = outputHeight;
-                player = new Player(0, 0, 10);
-                map = levelManager.load(player);          
+                player = new Player(0, 0, 10);       
                 raycaster = new Raycaster(gameResWidth);
                 raycasterRender = new RaycasterRender();
                 distToPlane = (outputWidth / 2) / Math.tan(raycaster.fov / 2);
@@ -96,6 +96,7 @@ and open the template in the editor.
                 document.onkeyup = onKeyUp;
                 canvasGame.onmousedown = onMouseDown;
                 canvasGame.onmouseup = onMouseUp;
+                map = levelManager.load(player);  
                 requestAnimationFrame(update);
             }
             

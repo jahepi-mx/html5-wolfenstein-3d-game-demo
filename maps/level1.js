@@ -15,6 +15,8 @@ class Level1 extends Map {
         this.enemyParams[18 * this.width + 7] = {velocity: 100, dirRadians: Math.PI / 2};
         this.enemyParams[7 * this.width + 1] = {velocity: 50, vertical: false, numberOfBlocksToMove: 3};
         this.enemyParams[1 * this.width + 5] = {velocity: 50, vertical: true, numberOfBlocksToMove: 6};
+        
+        music = Assets.getInstance().playAudio(Assets.getInstance().level1, true, 0.03);
     }
     
     reset() {

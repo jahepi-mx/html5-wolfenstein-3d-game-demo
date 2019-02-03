@@ -31,6 +31,8 @@ class Boss {
         this.dispose = false;
         this.randomShootTime = 0;
         this.randomShootTimeLimit = Math.random() * 3;
+        this.speakingTime = 0;
+        this.speakingTimeLimit = 4;
     }
     
     update(dt) {
@@ -40,7 +42,7 @@ class Boss {
             this.bullets = [];
             return;
         }
-        
+        this.speakingTime += dt;
         this.randomShootTime += dt;
         this.searchTime += dt;
         if (this.searchTime > this.searchTimeLimit && this.fireAnimation.isStopped()) {
@@ -75,8 +77,17 @@ class Boss {
             this.velocity.mulThis(0);
             this.randomShootTime = 0;
             this.randomShootTimeLimit = Math.random() * 5;
-            
-            if (this.shootTime >= this.shootTimeLimit) {
+
+            if (this.shootTime >= this.shootTimeLimit) {               
+                var saySomething = Math.random() * 10;
+                if (saySomething > 5) {
+                    if (this.speakingTime >= this.speakingTimeLimit) { 
+                        this.speakingTime = 0;
+                        var volume = (1 - (playerVector.dot(playerVector) / 2000000)) * 0.1;
+                        this.assets.playAudio(Math.random() < 0.5 ? this.assets.diemf : this.assets.laugh, false, volume);
+                    }
+                }
+                this.assets.playAudio(this.assets.gunshotboss, false, 0.1);
                 var diff = player.position.sub(this.position);
                 var radians = diff.getAngle();
                 var bullet = new Bullet(this.position.clone(), new Vector(1, 0).setUnitAngle(radians + Math.PI / 8))
@@ -153,6 +164,7 @@ class Boss {
         this.life--;
         this.damageTime = 0;
         if (this.life <= 0) {
+            this.assets.playAudio(this.assets.bossdie, false, 0.1);
             this.life = 0;
             this.isDead = true;
         }

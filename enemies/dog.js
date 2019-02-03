@@ -76,6 +76,7 @@ class Dog {
             this.directionVectorTo = playerVector;
             
             if (this.attackTime >= this.attackTimeLimit) {
+                this.assets.playAudio(this.assets.dogbark, false, 0.05);
                 this.attackTime = 0;
                 player.damage();
                 this.attackAnimation.reset();
@@ -146,6 +147,7 @@ class Dog {
         this.damageTime = 0;
         this.isAware = true;
         if (this.life <= 0) {
+            this.assets.playAudio(this.assets.dogdie, false, 0.1);
             this.life = 0;
             this.isDead = true;
         }

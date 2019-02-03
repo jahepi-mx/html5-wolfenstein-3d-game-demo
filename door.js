@@ -10,6 +10,7 @@ class Door extends Tile {
         this.closeTime = 2;
         this.closeTimeCount = 0;
         this.isClosingCountdown = false;
+        this.isMakingNoise = false;
     }
     
     update(dt) {
@@ -26,10 +27,15 @@ class Door extends Tile {
                     this.walkable = false;
                     this.openBool = false;
                     this.isClosingCountdown = false;
+                    this.isMakingNoise = false;
                 }
             }
         }
         if (this.openBool && !this.isClosingCountdown) {
+            if (!this.isMakingNoise) {
+                this.assets.playAudio(this.assets.door, false, 1);
+                this.isMakingNoise = true;
+            }
             this.openRange.addThis(this.velocity.mul(dt * 3));
             if (this.openRange.x >= 100) {
                 this.openRange.x = 100;

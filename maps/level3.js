@@ -14,6 +14,11 @@ class Level3 extends Map {
         this.enemies.push(this.boss);
         this.finishTime = 0;
         this.finishTimeLimit = 3;
+        
+        if (music !== null) {
+            music.stop();
+        }
+        music = Assets.getInstance().playAudio(Assets.getInstance().level3, true, 0.06);
     }
     
     reset() {
