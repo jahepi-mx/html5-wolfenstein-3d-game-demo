@@ -50,6 +50,9 @@ class Dog {
             this.searchTime = 0;
         }
         this.damageTime += dt;
+        
+        // Disable door openning
+        /*
         this.searchDoorTime += dt;
         if (this.searchDoorTime > this.searchDoorTimeLimit) {
             var currX = parseInt(this.position.x / this.map.tileLength);
@@ -66,7 +69,8 @@ class Dog {
             }
             this.searchDoorTime = 0;
         }
-        
+        */
+       
         var playerVector = player.position.sub(this.position);
         this.attackTime += dt;
         if (playerVector.dot(playerVector) <= 4000 && this.isAware) {

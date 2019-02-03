@@ -26,7 +26,7 @@ class Boss {
         this.fireAnimation = new Animation(3, 2);
         this.fireAnimation.stopAtSequenceNumber(3, null);
         this.fireAnimation.stop();
-        this.life = 10;
+        this.life = 30;
         this.isDead = false;
         this.dispose = false;
         this.randomShootTime = 0;

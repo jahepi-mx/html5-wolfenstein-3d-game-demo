@@ -7,7 +7,7 @@ class Door extends Tile {
         this.atlas = Atlas.getInstance();
         this.assets = Assets.getInstance();
         this.image = "door";
-        this.closeTime = 2;
+        this.closeTime = 6;
         this.closeTimeCount = 0;
         this.isClosingCountdown = false;
         this.isMakingNoise = false;

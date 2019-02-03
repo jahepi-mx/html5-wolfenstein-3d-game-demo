@@ -54,6 +54,9 @@ class Soldier {
             this.searchTime = 0;
         }
         this.damageTime += dt;
+        
+        // Disable door openning
+        /*
         this.searchDoorTime += dt;
         if (this.searchDoorTime > this.searchDoorTimeLimit) {
             var currX = parseInt(this.position.x / this.map.tileLength);
@@ -70,7 +73,8 @@ class Soldier {
             }
             this.searchDoorTime = 0;
         }
-        
+        */
+       
         var playerVector = player.position.sub(this.position);
         this.shootTime += dt;
         if (playerVector.dot(playerVector) <= this.shootDistance && this.isAware) {
