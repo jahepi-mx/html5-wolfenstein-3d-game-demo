@@ -74,6 +74,7 @@ class Level1 extends Map {
         this.load();
         this.isFinished = false;
         this.player.setViewDirection(Math.PI / 2);
+        this.player.life = 20;
     }
     
     update(dt) {

@@ -35,6 +35,7 @@ class Level3 extends Map {
         this.player.position.x = this.tileLength * 15 + this.tileLength / 2;
         this.player.position.y = this.tileLength * 4 + this.tileLength / 2;
         this.player.setViewDirection(Math.PI / 2);
+        this.player.life = 20;
         this.load();
         this.isFinished = false;
         this.boss = new Boss(16, 16, 50, this, 0.1, 50);

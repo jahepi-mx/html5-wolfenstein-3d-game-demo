@@ -36,6 +36,7 @@ class Level2 extends Map {
         this.player.position.x = this.tileLength * 15 + this.tileLength / 2;
         this.player.position.y = this.tileLength * 1 + this.tileLength / 2;
         this.player.setViewDirection(Math.PI / 2);
+        this.player.life = 20;
         this.load();
         this.isFinished = false;
     }
