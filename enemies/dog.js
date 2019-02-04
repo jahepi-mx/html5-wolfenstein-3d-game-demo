@@ -48,9 +48,6 @@ class Dog {
         if (this.searchTime > this.searchTimeLimit && this.isAware) {
             this.path = [];
             this.pathfinding();
-            if (!this.hasFoundPlayer) {
-                this.isAware = false;
-            }
             this.searchTime = 0;
         }
         this.damageTime += dt;
@@ -74,7 +71,7 @@ class Dog {
        
         var playerVector = player.position.sub(this.position);
         this.attackTime += dt;
-        if (playerVector.dot(playerVector) <= 4000 && this.isAware) {
+        if (playerVector.dot(playerVector) <= 4000 && this.isAware && this.hasFoundPlayer) {
             this.path = [];
             this.pathTo = null;
             this.velocity.mulThis(0);

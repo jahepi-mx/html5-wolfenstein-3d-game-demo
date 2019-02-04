@@ -52,9 +52,6 @@ class Soldier {
         if (this.searchTime > this.searchTimeLimit && this.isAware) {
             this.path = [];
             this.pathfinding();
-            if (!this.hasFoundPlayer) {
-                this.isAware = false;
-            }
             this.searchTime = 0;
         }
         this.damageTime += dt;
@@ -78,7 +75,7 @@ class Soldier {
        
         var playerVector = player.position.sub(this.position);
         this.shootTime += dt;
-        if (playerVector.dot(playerVector) <= this.shootDistance && this.isAware) {
+        if (playerVector.dot(playerVector) <= this.shootDistance && this.isAware && this.hasFoundPlayer) {
             this.path = [];
             this.pathTo = null;
             this.velocity.mulThis(0);
