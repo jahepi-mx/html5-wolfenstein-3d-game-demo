@@ -1,6 +1,6 @@
 class Boss {
     
-    constructor(x, y, velocity, map, shootTimeLimit) {
+    constructor(x, y, velocity, map, shootTimeLimit, life) {
         this.map = map;
         this.length = 25;
         this.moves = [[-1, 0], [0, -1], [1, 0], [0, 1]];
@@ -26,7 +26,7 @@ class Boss {
         this.fireAnimation = new Animation(3, 2);
         this.fireAnimation.stopAtSequenceNumber(3, null);
         this.fireAnimation.stop();
-        this.life = 30;
+        this.life = life;
         this.isDead = false;
         this.dispose = false;
         this.randomShootTime = 0;

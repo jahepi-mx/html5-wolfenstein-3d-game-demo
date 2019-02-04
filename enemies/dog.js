@@ -1,6 +1,6 @@
 class Dog {
     
-    constructor(x, y, velocity, map, dirRadians) {
+    constructor(x, y, velocity, map, dirRadians, life) {
         this.map = map;
         this.length = 25;
         this.moves = [[-1, 0], [0, -1], [1, 0], [0, 1]];
@@ -28,10 +28,11 @@ class Dog {
         this.attackAnimation = new Animation(3, 2);
         this.attackAnimation.stopAtSequenceNumber(3, null);
         this.attackAnimation.stop();
-        this.life = 10;
+        this.life = life;
         this.isDead = false;
         this.dispose = false;
         this.isAware = false;
+        this.hasFoundPlayer = false;
     }
     
     update(dt) {
@@ -47,12 +48,13 @@ class Dog {
         if (this.searchTime > this.searchTimeLimit && this.isAware) {
             this.path = [];
             this.pathfinding();
+            if (!this.hasFoundPlayer) {
+                this.isAware = false;
+            }
             this.searchTime = 0;
         }
         this.damageTime += dt;
         
-        // Disable door openning
-        /*
         this.searchDoorTime += dt;
         if (this.searchDoorTime > this.searchDoorTimeLimit) {
             var currX = parseInt(this.position.x / this.map.tileLength);
@@ -69,7 +71,6 @@ class Dog {
             }
             this.searchDoorTime = 0;
         }
-        */
        
         var playerVector = player.position.sub(this.position);
         this.attackTime += dt;
@@ -204,6 +205,7 @@ class Dog {
             }
             //this.path.push(map.tiles[index].position);
         }
+        this.hasFoundPlayer = toTileFound;
     }
     
     calculateDirection(dt) {

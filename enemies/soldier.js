@@ -1,6 +1,6 @@
 class Soldier {
     
-    constructor(x, y, velocity, map, dirRadians, shootTimeLimit, shootDistance, unawarenessDistance, awarenessDistance) {
+    constructor(x, y, velocity, map, dirRadians, shootTimeLimit, shootDistance, unawarenessDistance, awarenessDistance, life) {
         this.map = map;
         this.length = 25;
         this.moves = [[-1, 0], [0, -1], [1, 0], [0, 1]];
@@ -28,13 +28,14 @@ class Soldier {
         this.fireAnimation = new Animation(2, 2);
         this.fireAnimation.stopAtSequenceNumber(3, null);
         this.fireAnimation.stop();
-        this.life = 10;
+        this.life = life;
         this.isDead = false;
         this.dispose = false;
         this.isAware = false;
         this.shootDistance = shootDistance === 0 ? 20000 : shootDistance;
         this.unawarenessDistance = unawarenessDistance === 0 ? 200000 : unawarenessDistance;
         this.awarenessDistance = awarenessDistance === 0 ? 150000 : awarenessDistance;
+        this.hasFoundPlayer = false;
     }
     
     update(dt) {
@@ -51,12 +52,13 @@ class Soldier {
         if (this.searchTime > this.searchTimeLimit && this.isAware) {
             this.path = [];
             this.pathfinding();
+            if (!this.hasFoundPlayer) {
+                this.isAware = false;
+            }
             this.searchTime = 0;
         }
         this.damageTime += dt;
         
-        // Disable door openning
-        /*
         this.searchDoorTime += dt;
         if (this.searchDoorTime > this.searchDoorTimeLimit) {
             var currX = parseInt(this.position.x / this.map.tileLength);
@@ -73,7 +75,6 @@ class Soldier {
             }
             this.searchDoorTime = 0;
         }
-        */
        
         var playerVector = player.position.sub(this.position);
         this.shootTime += dt;
@@ -224,6 +225,7 @@ class Soldier {
             }
             //this.path.push(map.tiles[index].position);
         }
+        this.hasFoundPlayer = toTileFound;
     }
     
     calculateDirection(dt) {

@@ -85,8 +85,8 @@ and open the template in the editor.
                 contextGame.clearRect(0, 0, canvasGame.width, canvasGame.height);
                 contextGame.imageSmoothingEnabled = false;
                 var percentage = Math.floor(Assets.getInstance().getLoadedRatio() * 100);
-                contextGame.font = Math.floor(canvasGame.height * .14) + "px joystix";;
-                contextGame.fillStyle = "#fff";
+                contextGame.font = Math.floor(canvasGame.height * .07) + "px joystix";;
+                contextGame.fillStyle = "#ff0000";
                 contextGame.textAlign = "center";
                 contextGame.fillText("Downloading Assets " + percentage + "%", canvasGame.width / 2, canvasGame.height * 0.3);
             }
@@ -94,8 +94,8 @@ and open the template in the editor.
             function onLoadAtlas() {
                 document.onkeydown = onKeyDown;
                 document.onkeyup = onKeyUp;
-                canvasGame.onmousedown = onMouseDown;
-                canvasGame.onmouseup = onMouseUp;
+                document.onmousedown = onMouseDown;
+                document.onmouseup = onMouseUp;
                 map = levelManager.load(player);  
                 requestAnimationFrame(update);
             }
@@ -104,8 +104,8 @@ and open the template in the editor.
                 contextGame.clearRect(0, 0, canvasGame.width, canvasGame.height);
                 contextGame.imageSmoothingEnabled = false;
                 var percentage = Math.floor(Atlas.getInstance().getLoadedRatio() * 100);
-                contextGame.font = Math.floor(canvasGame.height * .14) + "px joystix";;
-                contextGame.fillStyle = "#fff";
+                contextGame.font = Math.floor(canvasGame.height * .07) + "px joystix";;
+                contextGame.fillStyle = "#ff0000";
                 contextGame.textAlign = "center";
                 contextGame.fillText("Downloading Atlas " + percentage + "%", canvasGame.width / 2, canvasGame.height * 0.3);
             }

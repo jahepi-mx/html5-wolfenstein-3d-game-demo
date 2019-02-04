@@ -15,9 +15,10 @@ class RaycasterRender {
         context.imageSmoothingEnabled = false;
         
         context.clearRect(0, 0, outputWidth, outputHeight);
-        context.fillStyle = "#222";
+        
+        context.fillStyle = map.ceilingColor;
         context.fillRect(0, 0, outputWidth, outputHeight / 2);
-        context.fillStyle = "#444";
+        context.fillStyle = map.floorColor;
         context.fillRect(0, outputHeight / 2, outputWidth, outputHeight / 2);
         for (let data of this.data) {
             data.object.renderRaycaster(context, data);

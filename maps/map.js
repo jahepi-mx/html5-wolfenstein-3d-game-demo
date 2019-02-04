@@ -29,6 +29,8 @@ class Map {
         this.exitTile = null;
         this.isFinished = false;
         this.enemyParams = [];
+        this.ceilingColor = "#21190c";
+        this.floorColor = "#312512";
     }
     
     load() {
@@ -43,19 +45,19 @@ class Map {
             if (value === MAP_SOLDIER) {
                 tile = new Tile(x, newY, value, this.tileLength, true);
                 var param = this.enemyParams[newY * 32 + x];
-                var enemy = new Soldier(x, newY, param.velocity, this, param.dirRadians, param.shootTimeLimit, param.shootDistance, param.unawarenessDistance, param.awarenessDistance);
+                var enemy = new Soldier(x, newY, param.velocity, this, param.dirRadians, param.shootTimeLimit, param.shootDistance, param.unawarenessDistance, param.awarenessDistance, param.life);
                 this.enemies.push(enemy);
             }
             if (value === MAP_DOG) {
                 tile = new Tile(x, newY, value, this.tileLength, true);
                 var param = this.enemyParams[newY * 32 + x];
-                var enemy = new Dog(x, newY, param.velocity, this, param.dirRadians);
+                var enemy = new Dog(x, newY, param.velocity, this, param.dirRadians, param.life);
                 this.enemies.push(enemy);
             }
             if (value === MAP_BOSS) {
                 tile = new Tile(x, newY, value, this.tileLength, true);
                 var param = this.enemyParams[newY * 32 + x];
-                var enemy = new Boss(x, newY, param.velocity, this, param.shootTimeLimit);
+                var enemy = new Boss(x, newY, param.velocity, this, param.shootTimeLimit, param.life);
                 this.enemies.push(enemy);
             }
             if (value === MAP_LIFE) {

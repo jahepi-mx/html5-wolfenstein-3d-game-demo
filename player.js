@@ -4,9 +4,9 @@ class Player {
         this.length = length;
         this.position = new Vector(x, y);
         this.velocity = new Vector(0, 0);
-        this.velocityLength = new Vector(85, 85).length();
+        this.velocityLength = new Vector(105, 105).length();
         this.friction = 0.90;
-        this.rotation = Math.PI / 2;
+        this.rotation = Math.PI;
         this.radianStep = Math.PI / 2;
         this.rotateLeftBool = false;
         this.rotateRightBool = false;
@@ -28,6 +28,12 @@ class Player {
         this.maxLife = this.life;
         this.isDead = false;
         this.assets = Assets.getInstance();
+    }
+    
+    setViewDirection(radians) {
+        this.rotation = radians;
+        this.playerDirection = new Vector(Math.cos(radians), Math.sin(radians));
+        this.viewDirection = new Vector(this.playerDirection.x, this.playerDirection.y);
     }
     
     update(dt) {
