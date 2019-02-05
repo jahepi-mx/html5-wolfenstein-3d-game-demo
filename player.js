@@ -171,6 +171,7 @@ class Player {
                     item.dispose = true;
                     this.takingLife = 0;
                     this.life++;
+                    this.assets.playAudio(this.assets.life, false, 0.2);
                 }
             }
         }
