@@ -8,6 +8,7 @@ class Player {
         this.friction = 0.90;
         this.rotation = Math.PI;
         this.radianStep = Math.PI / 2;
+        this.radianStepMouse = Math.PI * 0.25;
         this.rotateLeftBool = false;
         this.rotateRightBool = false;
         this.forwardBool = false;
@@ -52,7 +53,7 @@ class Player {
             this.shootTime = 0;
             this.isShooting = true;
         }
-            
+        this.rotation += this.radianStepMouse * mouseRatio * dt;     
         if (this.rotateLeftBool) {
             this.rotation += this.radianStep * dt; 
         }
