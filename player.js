@@ -6,9 +6,9 @@ class Player {
         this.velocity = new Vector(0, 0);
         this.velocityLength = new Vector(105, 105).length();
         this.friction = 0.90;
+        this.totalFriction = Math.pow(this.friction, 60);
         this.rotation = Math.PI;
         this.radianStep = Math.PI / 2;
-        this.radianStepMouse = Math.PI * 0.25;
         this.rotateLeftBool = false;
         this.rotateRightBool = false;
         this.forwardBool = false;
@@ -53,7 +53,7 @@ class Player {
             this.shootTime = 0;
             this.isShooting = true;
         }
-        this.rotation += this.radianStepMouse * mouseRatio * dt;     
+            
         if (this.rotateLeftBool) {
             this.rotation += this.radianStep * dt; 
         }
@@ -139,7 +139,10 @@ class Player {
         if (collide) {
             this.position = prevPosition;
         }
-        this.velocity.mulThis(this.friction);
+        
+        var fps = 1 / dt;
+        var currentFriction = Math.pow(this.totalFriction, 1 / fps);
+        this.velocity.mulThis(currentFriction);
         
         for (var a = this.bullets.length - 1; a >= 0; a--) {
             var bullet = this.bullets[a];
