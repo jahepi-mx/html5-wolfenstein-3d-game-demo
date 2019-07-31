@@ -1,7 +1,9 @@
 # html5-wolfenstein-3d-game-demo
+
 Javascript and Html5 game demo where i use some of the sprites from the original Wolfenstein 3D game.
 
 ## Features:
+
 - Doors
 - Moving Walls
 - Enemy AI (Pathfinding)
@@ -12,7 +14,7 @@ Javascript and Html5 game demo where i use some of the sprites from the original
 
 ## Maps
 
-Maps were build in a Map Editor called Tiled for easier manipulation: https://www.mapeditor.org
+Maps were built in a Map Editor called Tiled for easier manipulation: https://www.mapeditor.org
 
 The map files are located in the project folder /assets/maps
 
