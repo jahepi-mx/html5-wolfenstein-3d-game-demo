@@ -26,3 +26,7 @@ The map files are located in the project folder /assets/maps
 - S - Move Backward
 - E - Open Doors
 - Right Mouse Click - Shooting
+
+## Playable Demo
+
+https://jahepi-mx.github.io/html5-wolfenstein3d-game-demo
