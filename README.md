@@ -23,3 +23,4 @@ The map files are located in the project folder /assets/maps
 - W - Move Forward
 - S - Move Backward
 - E - Open Doors
+- Right Mouse Click - Shooting
