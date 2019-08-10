@@ -1,4 +1,4 @@
-# html5-wolfenstein-3d-game-demo
+# Html5 Wolfenstein 3d Game Demo
 
 Javascript and Html5 game demo where i use some of the sprites from the original Wolfenstein 3D game.
 
