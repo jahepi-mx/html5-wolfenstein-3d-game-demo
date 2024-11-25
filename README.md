@@ -1,6 +1,6 @@
-# Html5 Wolfenstein 3d Game Demo
+## Html5 Wolfenstein 3D Game Demo
 
-Javascript and Html5 game demo where i use some of the sprites from the original Wolfenstein 3D game.
+A **JavaScript** and **HTML5** game demo where I use some of the sprites from the original Wolfenstein 3D game.
 
 ## Features:
 
@@ -14,9 +14,9 @@ Javascript and Html5 game demo where i use some of the sprites from the original
 
 ## Maps
 
-Maps were built in a Map Editor called Tiled for easier manipulation: https://www.mapeditor.org
+The maps were built using a Map Editor called **Tiled** for easier manipulation: https://www.mapeditor.org.
 
-The map files are located in the project folder /assets/maps
+The map files are located in the project folder: _/assets/maps_
 
 ## Control Scheme
 
@@ -26,6 +26,10 @@ The map files are located in the project folder /assets/maps
 - S - Move Backward
 - E - Open Doors
 - Right Mouse Click - Shooting
+
+## Screenshot
+
+![Game picture](https://jahepi-mx.github.io/images/wp1.png)
 
 ## Playable Demo
 
